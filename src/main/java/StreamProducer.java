@@ -21,11 +21,21 @@ public class StreamProducer {
             br.readLine(); // dispose of first line
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                StockRecord stockRecord = parseLine(line);
+                System.out.println(stockRecord.toString());
                 Thread.sleep(rate);
             }
         } catch (Exception e) {
 
         }
+    }
+
+    private static StockRecord parseLine(String line) {
+        String values[] = line.split(",");
+        String ticker = values[2];
+        double price = Double.parseDouble(values[6]);
+        double volume = Double.parseDouble(values[7]);
+        StockRecord stockRecord = new StockRecord(ticker, price, volume);
+        return stockRecord;
     }
 }
