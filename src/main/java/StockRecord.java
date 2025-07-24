@@ -1,9 +1,16 @@
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class StockRecord {
     private String ticker;
     private double closePrice;
     private double volume;
 
-    public StockRecord(String ticker, double price, double volume) {
+    @JsonCreator
+    public StockRecord(
+            @JsonProperty("ticker") String ticker,
+            @JsonProperty("closePrice") double price,
+            @JsonProperty("volume") double volume) {
         this.ticker = ticker;
         this.closePrice = price;
         this.volume = volume;
