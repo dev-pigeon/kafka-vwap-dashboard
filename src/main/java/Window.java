@@ -7,6 +7,14 @@ public class Window {
     private final double RECORD_LIFESPAN = 2000;
     private Deque<StockRecord> recordDeque = new ArrayDeque<>();
 
+    public void updateWindow(StockRecord record) {
+        double recordVolume = record.getVolume();
+        runningProductSum += (record.getClosePrice() * recordVolume);
+        runningVolumeSum += recordVolume;
+        recordDeque.add(record);
+        checkRecordMembership();
+    }
+
     public void addRecord(StockRecord record) {
         recordDeque.add(record);
     }
@@ -34,7 +42,6 @@ public class Window {
                 // they are inserted in order - if the front isn't expired neither are the rest
                 break;
             }
-
         }
     }
 
