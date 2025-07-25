@@ -19,6 +19,19 @@ public class Window {
     }
 
     public void evictOldRecords() {
+        final long now = System.currentTimeMillis();
+        while (true && (recordDeque.peek() != null)) {
+            StockRecord front = recordDeque.peek();
+            if (!(recordIsValid(front.getTimeStamp(), now))) {
+                runningProductSum -= (front.getClosePrice() * front.getVolume());
+                runningVolumeSum -= front.getVolume();
+                recordDeque.pop();
+            } else {
+                // they are inserted in order - if the front isn't expired neither are the rest
+                break;
+            }
+
+        }
     }
 
     public double calculateVWAP() {
