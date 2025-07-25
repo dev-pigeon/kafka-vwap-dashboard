@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.*;
 
 public class StreamProducer {
     private static Long rate = null;
+    private static final long DEFAULT_RATE = 250;
     private static final String TOPIC = "stock-records";
 
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class StreamProducer {
     }
 
     private static void streamFile() {
-        rate = (long) ((rate != null) ? rate : 250);
+        rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
         String filePath = "./data/stock_data_cleaned.csv";
         System.out.println("Opening file...");
 
