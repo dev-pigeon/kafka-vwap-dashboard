@@ -36,6 +36,7 @@ public class StockRecord {
     }
 
     public String toString() {
-        return String.format("Ticker: %s   Price: %f  Volume: %f", this.ticker, this.closePrice, this.volume);
+        return String.format("Ticker:  %s Price: %f  Volume: %f  Timestamp: %f", this.ticker, this.closePrice,
+                this.volume, this.timeStamp);
     }
 }
