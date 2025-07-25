@@ -24,7 +24,7 @@ public class Window {
         recordDeque.pop();
     }
 
-    public void evictOldRecords() {
+    public void checkRecordMembership() {
         final long now = System.currentTimeMillis();
         while (true && (recordDeque.peek() != null)) {
             StockRecord front = recordDeque.peek();
