@@ -18,11 +18,12 @@ public class StreamProducer {
     }
 
     private static void streamFile() {
+        rate = (long) ((rate != null) ? rate : 0.25);
         String filePath = "./data/stock_data_cleaned.csv";
         System.out.println("Opening file...");
 
         Properties props = new Properties();
-        props.put("boostrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", "localhost:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "StockRecordSerializer");
 
@@ -37,7 +38,7 @@ public class StreamProducer {
 
                 ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
                 producer.send(record);
-
+                System.out.printf("Sent Record: %s", stockRecord.toString());
                 Thread.sleep(rate);
             }
 
