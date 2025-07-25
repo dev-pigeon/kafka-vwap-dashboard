@@ -8,7 +8,7 @@ public class Window {
     private Deque<StockRecord> recordDeque = new ArrayDeque<>();
 
     public void addRecord(StockRecord record) {
-
+        recordDeque.add(record);
     }
 
     public boolean recordIsValid(long recordTimeStamp, long now) {
