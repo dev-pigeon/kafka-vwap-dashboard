@@ -20,6 +20,6 @@ public class Window {
     }
 
     public double calculateVWAP() {
-        return 0.0;
+        return runningProductSum / runningVolumeSum;
     }
 }
