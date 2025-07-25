@@ -18,14 +18,18 @@ public class Window {
         return false;
     }
 
+    public void evictRecord(StockRecord record) {
+        runningProductSum -= (record.getClosePrice() * record.getVolume());
+        runningVolumeSum -= record.getVolume();
+        recordDeque.pop();
+    }
+
     public void evictOldRecords() {
         final long now = System.currentTimeMillis();
         while (true && (recordDeque.peek() != null)) {
             StockRecord front = recordDeque.peek();
             if (!(recordIsValid(front.getTimeStamp(), now))) {
-                runningProductSum -= (front.getClosePrice() * front.getVolume());
-                runningVolumeSum -= front.getVolume();
-                recordDeque.pop();
+                evictRecord(front);
             } else {
                 // they are inserted in order - if the front isn't expired neither are the rest
                 break;
