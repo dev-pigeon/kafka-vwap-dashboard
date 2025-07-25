@@ -11,12 +11,14 @@ public class Window {
 
     }
 
-    public boolean recordIsValid(long recordTimeStamp) {
+    public boolean recordIsValid(long recordTimeStamp, long now) {
+        if ((now - recordTimeStamp) < RECORD_LIFESPAN) {
+            return true;
+        }
         return false;
     }
 
     public void evictOldRecords() {
-
     }
 
     public double calculateVWAP() {
