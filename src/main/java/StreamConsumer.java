@@ -24,11 +24,6 @@ public class StreamConsumer {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         KStream<String, StockRecord> stream = streamsBuilder.stream("stock-records");
 
-        // Add debug print on consumption
-        stream.foreach((key, value) -> {
-            System.out.println("Received record: key=" + key + ", value=" + value);
-        });
-
         stream
                 .groupByKey(Grouped.with(Serdes.String(), new StockRecordSerde()))
                 .aggregate(
@@ -44,7 +39,6 @@ public class StreamConsumer {
                 .toStream()
                 .mapValues(window -> {
                     double vwap = window.calculateVWAP();
-                    System.out.println("Calculated VWAP for window: " + vwap);
                     return vwap;
                 })
                 .to("record-VWAPs", Produced.with(Serdes.String(), Serdes.Double()));
@@ -53,7 +47,6 @@ public class StreamConsumer {
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), props);
 
-        // Exception handler to catch silent crashes
         streams.setUncaughtExceptionHandler((thread, exception) -> {
             System.err.println("Uncaught exception in thread " + thread.getName());
             exception.printStackTrace();
@@ -64,7 +57,6 @@ public class StreamConsumer {
             System.out.println("Stream state changed from " + oldState + " to " + newState);
         });
 
-        // Graceful shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutting down stream...");
             streams.close();

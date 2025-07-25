@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Window {
     private double runningProductSum = 0.0; // The running sum of volume x price for each record
     private double runningVolumeSum = 0.0;
-    private final double RECORD_LIFESPAN = 2000;
+    private final double RECORD_LIFESPAN = 120_000;
 
     @JsonIgnore
     private Deque<StockRecord> recordDeque;
@@ -51,8 +51,10 @@ public class Window {
     }
 
     public void checkRecordMembership(long now) {
-        while (true && (recordDeque.peek() != null)) {
+
+        while (recordDeque.peek() != null) {
             StockRecord front = recordDeque.peek();
+
             if (!(recordIsValid(front.getTimeStamp(), now))) {
                 evictRecord(front);
             } else {
