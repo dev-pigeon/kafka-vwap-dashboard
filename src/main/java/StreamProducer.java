@@ -53,7 +53,8 @@ public class StreamProducer {
         String ticker = values[2];
         double price = Double.parseDouble(values[6]);
         double volume = Double.parseDouble(values[7]);
-        StockRecord stockRecord = new StockRecord(ticker, price, volume);
+        long timeStamp = System.currentTimeMillis();
+        StockRecord stockRecord = new StockRecord(ticker, price, volume, timeStamp);
         return stockRecord;
     }
 }

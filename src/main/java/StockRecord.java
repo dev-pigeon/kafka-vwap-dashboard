@@ -5,15 +5,18 @@ public class StockRecord {
     private String ticker;
     private double closePrice;
     private double volume;
+    private long timeStamp;
 
     @JsonCreator
     public StockRecord(
             @JsonProperty("ticker") String ticker,
             @JsonProperty("closePrice") double price,
-            @JsonProperty("volume") double volume) {
+            @JsonProperty("volume") double volume,
+            @JsonProperty("timestamp") long timestamp) {
         this.ticker = ticker;
         this.closePrice = price;
         this.volume = volume;
+        this.timeStamp = timestamp;
     }
 
     public String getTicker() {
@@ -26,6 +29,10 @@ public class StockRecord {
 
     public double getVolume() {
         return this.volume;
+    }
+
+    public long getTimeStamp() {
+        return this.timeStamp;
     }
 
     public String toString() {
