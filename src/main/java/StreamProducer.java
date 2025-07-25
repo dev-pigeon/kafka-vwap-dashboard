@@ -18,7 +18,7 @@ public class StreamProducer {
     }
 
     private static void streamFile() {
-        rate = (long) ((rate != null) ? rate : 0.25);
+        rate = (long) ((rate != null) ? rate : 250);
         String filePath = "./data/stock_data_cleaned.csv";
         System.out.println("Opening file...");
 
