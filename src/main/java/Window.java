@@ -7,12 +7,12 @@ public class Window {
     private final double RECORD_LIFESPAN = 2000;
     private Deque<StockRecord> recordDeque = new ArrayDeque<>();
 
-    public void updateWindow(StockRecord record) {
+    public void updateWindow(StockRecord record, long now) {
         double recordVolume = record.getVolume();
         runningProductSum += (record.getClosePrice() * recordVolume);
         runningVolumeSum += recordVolume;
         recordDeque.add(record);
-        checkRecordMembership();
+        checkRecordMembership(now);
     }
 
     public void addRecord(StockRecord record) {
@@ -27,13 +27,13 @@ public class Window {
     }
 
     public void evictRecord(StockRecord record) {
-        runningProductSum -= (record.getClosePrice() * record.getVolume());
-        runningVolumeSum -= record.getVolume();
+        double recordVolume = record.getVolume();
+        runningProductSum -= (record.getClosePrice() * recordVolume);
+        runningVolumeSum -= recordVolume;
         recordDeque.pop();
     }
 
-    public void checkRecordMembership() {
-        final long now = System.currentTimeMillis();
+    public void checkRecordMembership(long now) {
         while (true && (recordDeque.peek() != null)) {
             StockRecord front = recordDeque.peek();
             if (!(recordIsValid(front.getTimeStamp(), now))) {
