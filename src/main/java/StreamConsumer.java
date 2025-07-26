@@ -47,11 +47,6 @@ public class StreamConsumer {
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), props);
 
-        streams.setUncaughtExceptionHandler((thread, exception) -> {
-            System.err.println("Uncaught exception in thread " + thread.getName());
-            exception.printStackTrace();
-        });
-
         // State listener to monitor lifecycle changes
         streams.setStateListener((newState, oldState) -> {
             System.out.println("Stream state changed from " + oldState + " to " + newState);
