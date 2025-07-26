@@ -1,3 +1,4 @@
 data/all_stock_data.csv
 data/stock_data_cleaned.csv
 target
+api/__pycache__
