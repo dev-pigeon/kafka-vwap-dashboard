@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify  # type: ignore
 from db import get_connection
 
 app = Flask(__name__)
