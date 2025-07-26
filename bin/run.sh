@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Store the filename
 filename="$1"
 shift
 
-# Check for filename
 if [ -z "$filename" ]; then
     echo "You must enter a filename."
-    echo "Example: ./bin/run.sh StreamProducer"
-    exit
+    echo "Example: ./bin/run.sh com.example.StreamProducer"
+    exit 1
 fi
 
-# Store the rest of the params
 params="$*"
 
-# Compile & run
-mvn compile exec:java -Dexec.mainClass="$filename" -Dexec.args="$params"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+KAFKA_DIR="$SCRIPT_DIR/../kafka"
 
+cd "$KAFKA_DIR"
+mvn compile exec:java -Dexec.mainClass="$filename" -Dexec.args="$params"
