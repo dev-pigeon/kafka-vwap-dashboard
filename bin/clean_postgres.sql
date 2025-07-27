@@ -1,0 +1,1 @@
+DELETE FROM kafka_dashboard.stock_vwap;
