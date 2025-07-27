@@ -65,7 +65,6 @@ public class Window {
     }
 
     public double calculateVWAP() {
-        checkRecordMembership(System.currentTimeMillis());
         return runningProductSum / runningVolumeSum;
     }
 }
