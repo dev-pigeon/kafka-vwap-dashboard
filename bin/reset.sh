@@ -9,4 +9,6 @@ bin/kafka-topics.sh --delete --topic stock-records --bootstrap-server localhost:
 bin/kafka-topics.sh --create --topic stock-records --bootstrap-server localhost:9092
 cd "$SCRIPT_DIR"
 
+# Reset Postgresql
+psql -U kafka_user -d kafka_dashboard -f clean_postgres.sql -h localhost
 
