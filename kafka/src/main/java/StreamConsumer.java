@@ -30,6 +30,10 @@ public class StreamConsumer {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, StockRecordSerde.class);
 
+        consume(props);
+    }
+
+    private static void consume(Properties props) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(STORE_NAME),
