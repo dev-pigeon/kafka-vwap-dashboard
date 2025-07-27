@@ -12,6 +12,10 @@ import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Suppressed;
 import org.apache.kafka.streams.state.KeyValueStore;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class StreamConsumer {
     public static void main(String[] args) {
@@ -40,17 +44,26 @@ public class StreamConsumer {
                 .mapValues(window -> {
                     double vwap = window.calculateVWAP();
                     return vwap;
-                })
-                .to("record-VWAPs", Produced.with(Serdes.String(), Serdes.Double()));
+                }).foreach((ticker, vwap) -> {
+                    if (vwap != null && !Double.isNaN(vwap)) {
+                        try (Connection conn = DriverManager.getConnection(
+                                "jdbc:postgresql://localhost:5432/kafka_dashboard",
+                                "kafka_user",
+                                "kafka_password");
+                                PreparedStatement stmt = conn.prepareStatement(
+                                        "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap) VALUES (?, ?);")) {
 
-        System.out.println("Starting stream consumer...");
+                            stmt.setString(1, ticker);
+                            stmt.setDouble(2, vwap);
+                            stmt.executeUpdate();
+
+                        } catch (SQLException e) {
+                            System.err.println("PostgreSQL insert error: " + e.getMessage());
+                        }
+                    }
+                });
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), props);
-
-        // State listener to monitor lifecycle changes
-        streams.setStateListener((newState, oldState) -> {
-            System.out.println("Stream state changed from " + oldState + " to " + newState);
-        });
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutting down stream...");
