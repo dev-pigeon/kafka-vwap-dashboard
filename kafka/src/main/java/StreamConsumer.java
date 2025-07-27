@@ -16,8 +16,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.apache.kafka.streams.state.Stores;
+import org.apache.kafka.streams.kstream.Named;
 
 public class StreamConsumer {
+
     public static void main(String[] args) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-dashboard-test-" + System.currentTimeMillis());
@@ -26,40 +29,28 @@ public class StreamConsumer {
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, StockRecordSerde.class);
 
         StreamsBuilder streamsBuilder = new StreamsBuilder();
+        streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
+                Stores.persistentKeyValueStore("vwap-store"),
+                Serdes.String(),
+                new WindowSerde()));
         KStream<String, StockRecord> stream = streamsBuilder.stream("stock-records");
 
-        stream
-                .groupByKey(Grouped.with(Serdes.String(), new StockRecordSerde()))
-                .aggregate(
-                        Window::new,
-                        (key, value, aggregate) -> {
-                            aggregate.updateWindow(value, System.currentTimeMillis());
-                            return aggregate;
-                        },
-                        Materialized.<String, Window, KeyValueStore<Bytes, byte[]>>as("vwap-store")
-                                .withKeySerde(Serdes.String())
-                                .withValueSerde(new WindowSerde()))
-                .suppress(Suppressed.untilTimeLimit(Duration.ofSeconds(10), Suppressed.BufferConfig.unbounded()))
-                .toStream()
-                .mapValues(window -> {
-                    double vwap = window.calculateVWAP();
-                    return vwap;
-                }).foreach((ticker, vwap) -> {
-                    if (vwap != null && !Double.isNaN(vwap)) {
-                        try (Connection conn = DriverManager.getConnection(
-                                "jdbc:postgresql://localhost:5432/kafka_dashboard",
-                                "kafka_user",
-                                "kafka_password");
-                                PreparedStatement stmt = conn.prepareStatement(
-                                        "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap) VALUES (?, ?);")) {
+        stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), "vwap-store")
+                .filter((key, vwap) -> vwap != null && !Double.isNaN(vwap))
+                .foreach((ticker, vwap) -> {
+                    try (Connection conn = DriverManager.getConnection(
+                            "jdbc:postgresql://localhost:5432/kafka_dashboard",
+                            "kafka_user",
+                            "kafka_password");
+                            PreparedStatement stmt = conn.prepareStatement(
+                                    "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap) VALUES (?, ?) ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap;")) {
 
-                            stmt.setString(1, ticker);
-                            stmt.setDouble(2, vwap);
-                            stmt.executeUpdate();
+                        stmt.setString(1, ticker);
+                        stmt.setDouble(2, vwap);
+                        stmt.executeUpdate();
 
-                        } catch (SQLException e) {
-                            System.err.println("PostgreSQL insert error: " + e.getMessage());
-                        }
+                    } catch (SQLException e) {
+                        System.err.println("PostgreSQL insert error: " + e.getMessage());
                     }
                 });
 
