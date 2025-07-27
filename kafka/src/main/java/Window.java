@@ -4,6 +4,7 @@ import java.util.Deque;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Window {
+
     private double runningProductSum = 0.0; // The running sum of volume x price for each record
     private double runningVolumeSum = 0.0;
     private final double RECORD_LIFESPAN = 120_000;
@@ -51,20 +52,20 @@ public class Window {
     }
 
     public void checkRecordMembership(long now) {
-
-        while (recordDeque.peek() != null) {
+        while (!recordDeque.isEmpty()) {
             StockRecord front = recordDeque.peek();
-
-            if (!(recordIsValid(front.getTimeStamp(), now))) {
+            long age = now - front.getTimeStamp();
+            if (!recordIsValid(front.getTimeStamp(), now)) {
                 evictRecord(front);
             } else {
-                // they are inserted in order - if the front isn't expired neither are the rest
                 break;
             }
         }
+
     }
 
     public double calculateVWAP() {
+        checkRecordMembership(System.currentTimeMillis());
         return runningProductSum / runningVolumeSum;
     }
 }
