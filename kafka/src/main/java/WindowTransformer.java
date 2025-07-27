@@ -5,10 +5,13 @@ import org.apache.kafka.streams.processor.Cancellable;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.KeyValueIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
+    private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
@@ -28,7 +31,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
         }
         window.updateWindow(value, System.currentTimeMillis());
         store.put(key, window);
-        return null; // Do not forward here, punctuate will handle it
+        return null; 
     }
 
     private void punctuate(long timestamp) {
@@ -36,7 +39,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
             while (iter.hasNext()) {
                 KeyValue<String, Window> entry = iter.next();
                 Window window = entry.value;
-                window.checkRecordMembership(timestamp);
+              //  window.checkRecordMembership(timestamp);
                 double vwap = window.calculateVWAP();
                 context.forward(entry.key, vwap);
                 store.put(entry.key, window);
