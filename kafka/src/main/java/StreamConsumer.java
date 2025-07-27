@@ -21,6 +21,8 @@ import org.apache.kafka.streams.kstream.Named;
 
 public class StreamConsumer {
 
+    static final String STORE_NAME = "vwap-store";
+
     public static void main(String[] args) {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-dashboard-test-" + System.currentTimeMillis());
@@ -28,14 +30,18 @@ public class StreamConsumer {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, StockRecordSerde.class);
 
+        consume(props);
+    }
+
+    private static void consume(Properties props) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore("vwap-store"),
+                Stores.persistentKeyValueStore(STORE_NAME),
                 Serdes.String(),
                 new WindowSerde()));
         KStream<String, StockRecord> stream = streamsBuilder.stream("stock-records");
 
-        stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), "vwap-store")
+        stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), STORE_NAME)
                 .filter((key, vwap) -> vwap != null && !Double.isNaN(vwap))
                 .foreach((ticker, vwap) -> {
                     try (Connection conn = DriverManager.getConnection(
