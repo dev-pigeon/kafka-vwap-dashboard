@@ -1,15 +1,14 @@
+import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.ValueTransformerWithKey;
-import org.apache.kafka.streams.kstream.ValueTransformerWithKeySupplier;
-import org.apache.kafka.streams.processor.Cancellable;
 import org.apache.kafka.streams.processor.ProcessorContext;
-import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.processor.Cancellable;
 import org.apache.kafka.streams.processor.PunctuationType;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.KeyValueIterator;
 
 import java.time.Duration;
 
-public class WindowTransformer implements ValueTransformerWithKey<String, StockRecord, Double> {
+public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
@@ -18,20 +17,18 @@ public class WindowTransformer implements ValueTransformerWithKey<String, StockR
     public void init(ProcessorContext context) {
         this.context = context;
         this.store = (KeyValueStore<String, Window>) context.getStateStore("vwap-store");
-        this.punctuator = context.schedule(Duration.ofMinutes(1), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
+        this.punctuator = context.schedule(Duration.ofSeconds(20), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
     }
 
     @Override
-    public Double transform(String key, StockRecord value) {
-        // get the correct window from the state store
+    public KeyValue<String, Double> transform(String key, StockRecord value) {
         Window window = store.get(key);
         if (window == null) {
             window = new Window();
         }
-
         window.updateWindow(value, System.currentTimeMillis());
         store.put(key, window);
-        return null; // return null here because only punctuator does VWAP
+        return null; // Do not forward here, punctuate will handle it
     }
 
     private void punctuate(long timestamp) {
@@ -41,7 +38,7 @@ public class WindowTransformer implements ValueTransformerWithKey<String, StockR
                 Window window = entry.value;
                 window.checkRecordMembership(timestamp);
                 double vwap = window.calculateVWAP();
-                context.forward(entry.key, vwap); // send result downstream
+                context.forward(entry.key, vwap);
                 store.put(entry.key, window);
             }
         }
