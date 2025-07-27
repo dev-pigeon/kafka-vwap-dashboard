@@ -39,7 +39,6 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
             while (iter.hasNext()) {
                 KeyValue<String, Window> entry = iter.next();
                 Window window = entry.value;
-              //  window.checkRecordMembership(timestamp);
                 double vwap = window.calculateVWAP();
                 context.forward(entry.key, vwap);
                 store.put(entry.key, window);

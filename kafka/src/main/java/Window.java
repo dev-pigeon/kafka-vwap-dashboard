@@ -40,7 +40,6 @@ public class Window {
         runningProductSum += (record.getClosePrice() * recordVolume);
         runningVolumeSum += recordVolume;
         recordDeque.add(record);
-        // checkRecordMembership(now);
     }
 
     public void addRecord(StockRecord record) {
@@ -76,11 +75,12 @@ public class Window {
 
     }
 
-    public double calculateVWAP() {
+    public Double calculateVWAP() {
         checkRecordMembership(System.currentTimeMillis());
         if (runningVolumeSum < MIN_VOLUME_THRESHOLD && runningVolumeSum > 0) {
-            log.info("SUSPICIOUSLY LOW VOLUME");
+            return null;
         }
+
         return runningProductSum / runningVolumeSum;
     }
 }
