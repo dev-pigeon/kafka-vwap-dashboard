@@ -42,37 +42,33 @@ public class Window {
         recordDeque.add(record);
     }
 
-    public void addRecord(StockRecord record) {
+    private void addRecord(StockRecord record) {
         recordDeque.add(record);
     }
 
-    public boolean recordIsValid(long recordTimeStamp, long now) {
+    private boolean recordIsValid(long recordTimeStamp, long now) {
         if ((now - recordTimeStamp) < RECORD_LIFESPAN) {
             return true;
         }
         return false;
     }
 
-    public void evictRecord(StockRecord record) {
+    private void evictRecord(StockRecord record) {
         double recordVolume = record.getVolume();
         runningProductSum -= (record.getClosePrice() * recordVolume);
         runningVolumeSum -= recordVolume;
         recordDeque.pop();
     }
 
-    public void checkRecordMembership(long now) {
-
+    private void checkRecordMembership(long now) {
         while (!recordDeque.isEmpty()) {
             StockRecord front = recordDeque.peek();
-            long age = now - front.getTimeStamp();
             if (!recordIsValid(front.getTimeStamp(), now)) {
-                // log.info("Evicting record: {}", age);
                 evictRecord(front);
             } else {
                 break;
             }
         }
-
     }
 
     public Double calculateVWAP() {
@@ -80,7 +76,6 @@ public class Window {
         if (runningVolumeSum < MIN_VOLUME_THRESHOLD && runningVolumeSum > 0) {
             return null;
         }
-
         return runningProductSum / runningVolumeSum;
     }
 }
