@@ -23,6 +23,16 @@ def get_stocks():
     return jsonify([{"ticker": row[0], "vwap": row[1]} for row in rows])
 
 
+@app.route("/top-five", methods=['GET'])
+def get_top_five():
+    conn, cursor = get_resources()
+    cursor.execute(
+        "SELECT ticker, vwap FROM kafka_dashboard.stock_vwap ORDER BY vwap DESC LIMIT 5;")
+    top_five = cursor.fetchall()
+    close_resources(conn, cursor)
+    return jsonify([{"ticker": row[0], "vwap": row[1]} for row in top_five])
+
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
