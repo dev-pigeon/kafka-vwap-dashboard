@@ -19,9 +19,12 @@ import java.sql.SQLException;
 import org.apache.kafka.streams.state.Stores;
 import org.apache.kafka.streams.kstream.Named;
 
-public class StreamConsumer {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    static final String STORE_NAME = "vwap-store";
+public class StreamConsumer {
+    private final static Logger log = LoggerFactory.getLogger(StreamConsumer.class);
+    private static final String STORE_NAME = "vwap-store";
 
     public static void main(String[] args) {
         Properties props = new Properties();
@@ -56,21 +59,21 @@ public class StreamConsumer {
                         stmt.executeUpdate();
 
                     } catch (SQLException e) {
-                        System.err.println("PostgreSQL insert error: " + e.getMessage());
+                        log.error("PostgreSQL insert error: {}", e.getMessage());
                     }
                 });
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), props);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Shutting down stream...");
+            log.info("Shutting down stream...");
             streams.close();
         }));
 
         try {
             streams.start();
         } catch (Throwable e) {
-            System.err.println("Error while starting Kafka Streams:");
+            log.error("Error while starting StreamConsumer: {}", e.getMessage());
             e.printStackTrace();
         }
     }
