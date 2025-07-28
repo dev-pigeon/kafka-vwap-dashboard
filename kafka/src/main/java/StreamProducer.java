@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.kafka.clients.producer.*;
 
@@ -8,6 +10,7 @@ public class StreamProducer {
     private static Long rate = null;
     private static final long DEFAULT_RATE = 250;
     private static final String TOPIC = "stock-records";
+    private static final Logger log = LoggerFactory.getLogger(StreamProducer.class);
 
     public static void main(String[] args) {
 
@@ -21,7 +24,7 @@ public class StreamProducer {
     private static void streamFile() {
         rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
         String filePath = "../data/stock_data_cleaned.csv";
-        System.out.println("Opening file...");
+        log.info("Opening file...");
 
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
@@ -36,10 +39,9 @@ public class StreamProducer {
             while ((line = br.readLine()) != null) {
                 StockRecord stockRecord = parseLine(line);
                 String key = stockRecord.getTicker();
-
                 ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
                 producer.send(record);
-                System.out.printf("Sent Record: %s", stockRecord.toString());
+                log.info("Sent Record: {}", stockRecord.soString());
                 Thread.sleep(rate);
             }
 

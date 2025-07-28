@@ -12,6 +12,8 @@ import java.time.Duration;
 
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
     private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
+    private final String STORE_NAME = "vwap-store";
+    private final int INTERVAL = 20; // seconds
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
@@ -19,8 +21,8 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
     @Override
     public void init(ProcessorContext context) {
         this.context = context;
-        this.store = (KeyValueStore<String, Window>) context.getStateStore("vwap-store");
-        this.punctuator = context.schedule(Duration.ofSeconds(20), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
+        this.store = (KeyValueStore<String, Window>) context.getStateStore(STORE_NAME);
+        this.punctuator = context.schedule(Duration.ofSeconds(INTERVAL), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
     }
 
     @Override
