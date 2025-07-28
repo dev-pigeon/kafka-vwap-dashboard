@@ -53,9 +53,9 @@ public class StreamProducer {
 
     private static StockRecord parseLine(String line) {
         String values[] = line.split(",");
-        String ticker = values[2];
-        double price = Double.parseDouble(values[6]);
-        double volume = Double.parseDouble(values[7]);
+        String ticker = values[1];
+        double price = Double.parseDouble(values[5]);
+        double volume = Double.parseDouble(values[6]);
         long timeStamp = System.currentTimeMillis();
         StockRecord stockRecord = new StockRecord(ticker, price, volume, timeStamp);
         return stockRecord;
