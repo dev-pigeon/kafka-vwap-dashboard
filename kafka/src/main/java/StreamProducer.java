@@ -30,6 +30,7 @@ public class StreamProducer {
         props.put("bootstrap.servers", "localhost:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "StockRecordSerializer");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
         try (Producer<String, StockRecord> producer = new KafkaProducer<>(props);
                 BufferedReader br = new BufferedReader(new FileReader(filePath))) {
