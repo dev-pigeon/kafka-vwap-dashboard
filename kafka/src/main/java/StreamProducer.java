@@ -41,7 +41,7 @@ public class StreamProducer {
                 String key = stockRecord.getTicker();
                 ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
                 producer.send(record);
-                log.info("Sent Record: {}", stockRecord.soString());
+                log.info("Sent Record: {}", stockRecord.toString());
                 Thread.sleep(rate);
             }
 
