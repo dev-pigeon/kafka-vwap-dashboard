@@ -10,6 +10,7 @@ public class StreamProducer {
     private static Long rate = null;
     private static final long DEFAULT_RATE = 250;
     private static final String TOPIC = "stock-records";
+    private static final Logger log = LoggerFactory.getLogger(StreamProducer.class);
 
     public static void main(String[] args) {
 
@@ -21,7 +22,6 @@ public class StreamProducer {
     }
 
     private static void streamFile() {
-        final Logger log = LoggerFactory.getLogger(StreamProducer.class);
         rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
         String filePath = "../data/stock_data_cleaned.csv";
         log.info("Opening file...");
