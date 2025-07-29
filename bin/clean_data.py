@@ -45,7 +45,9 @@ def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="S
         group_df = group_df.drop("split_factor", axis=1)
         adjusted_groups.append(group_df)
 
-    df_adjusted = pd.concat(adjusted_groups, ignore_index=True)
+    # Sort them again by date then by ticker stocks are chronological and interleaved by ticker
+    df_adjusted = pd.concat(adjusted_groups, ignore_index=True).sort_values(
+        by=["Date", "Ticker"]).reset_index(drop=True)
     df_cleaned = df_adjusted.drop("Stock Splits", axis=1)
     return df_cleaned
 
