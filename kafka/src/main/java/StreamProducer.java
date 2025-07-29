@@ -30,6 +30,7 @@ public class StreamProducer {
         props.put("bootstrap.servers", "localhost:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "StockRecordSerializer");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
         try (Producer<String, StockRecord> producer = new KafkaProducer<>(props);
                 BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -37,12 +38,16 @@ public class StreamProducer {
             br.readLine(); // skip header
             String line;
             while ((line = br.readLine()) != null) {
-                StockRecord stockRecord = parseLine(line);
-                String key = stockRecord.getTicker();
-                ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
-                producer.send(record);
-                log.info("Sent Record: {}", stockRecord.toString());
-                Thread.sleep(rate);
+                try {
+                    StockRecord stockRecord = parseLine(line);
+                    String key = stockRecord.getTicker();
+                    ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
+                    producer.send(record);
+                    log.info("Sent Record: {}", stockRecord.toString());
+                    Thread.sleep(rate);
+                } catch (Exception e) {
+                    continue;
+                }
             }
 
         } catch (Exception e) {
@@ -52,9 +57,9 @@ public class StreamProducer {
 
     private static StockRecord parseLine(String line) {
         String values[] = line.split(",");
-        String ticker = values[2];
-        double price = Double.parseDouble(values[6]);
-        double volume = Double.parseDouble(values[7]);
+        String ticker = values[1];
+        double price = Double.parseDouble(values[5]);
+        double volume = Double.parseDouble(values[6]);
         long timeStamp = System.currentTimeMillis();
         StockRecord stockRecord = new StockRecord(ticker, price, volume, timeStamp);
         return stockRecord;
