@@ -27,15 +27,18 @@ def volume_in_range(val):
         return False
 
 
-def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
-    df_range_adjusted = df_raw[df_raw[date_col].apply(
-        within_date_range)].drop("Dividends", axis=1)
+def drop_invalid_dates(df_raw, date_col="Date"):
+    df_valid_dates = df_raw[df_raw[date_col].apply(
+        within_date_range)]
+    return df_valid_dates
 
-    split_events = df_range_adjusted[df_range_adjusted[split_col] > 1]
+
+def adjust_for_splits(df_valid_dates, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
+    split_events = df_valid_dates[df_valid_dates[split_col] > 1]
 
     # Group by ticker
     adjusted_groups = []
-    grouped = df_range_adjusted.groupby(ticker_col)
+    grouped = df_valid_dates.groupby(ticker_col)
 
     for ticker, group_df in grouped:
         group_df = group_df.sort_values(date_col).copy()
@@ -77,6 +80,8 @@ def drop_outliers(df_split_adjusted, volume_col="Volume", price_col="Close"):
 
 
 df_raw = pd.read_csv("../data/all_stock_data.csv")
-df_split_adjusted = adjust_for_splits(df_raw)
+df_no_dividends = df_raw.drop("Dividends", axis=1)
+df_valid_dates = drop_invalid_dates(df_no_dividends)
+df_split_adjusted = adjust_for_splits(df_valid_dates)
 df_no_outliers = drop_outliers(df_split_adjusted)
 df_no_outliers.to_csv("../data/stock_data_cleaned.csv", index=False)
