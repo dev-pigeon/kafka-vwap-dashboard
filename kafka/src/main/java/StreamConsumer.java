@@ -54,7 +54,7 @@ public class StreamConsumer {
                             "kafka_user",
                             "kafka_password");
                             PreparedStatement stmt = conn.prepareStatement(
-                                    "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap) VALUES (?, ?) ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap;")) {
+                                    "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap, last_updated) VALUES (?, ?, NOW()) ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap, last_updated = NOW();")) {
 
                         stmt.setString(1, ticker);
                         stmt.setDouble(2, vwap);
