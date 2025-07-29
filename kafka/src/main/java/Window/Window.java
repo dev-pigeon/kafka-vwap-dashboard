@@ -71,11 +71,25 @@ public class Window {
         }
     }
 
+    private boolean validSums() {
+        return runningVolumeSum >= MIN_VOLUME_THRESHOLD && runningProductSum > 0;
+    }
+
+    private boolean isValidVWAP(double vwap) {
+        return vwap != Double.POSITIVE_INFINITY && vwap != Double.NEGATIVE_INFINITY;
+    }
+
     public Double calculateVWAP() {
         checkRecordMembership(System.currentTimeMillis());
-        if (runningVolumeSum < MIN_VOLUME_THRESHOLD && runningVolumeSum > 0) {
+        if (!(validSums())) {
             return null;
         }
-        return runningProductSum / runningVolumeSum;
+
+        final double windowVwap = runningProductSum / runningVolumeSum;
+        if (!isValidVWAP(windowVwap)) {
+            return null;
+        }
+
+        return windowVwap;
     }
 }
