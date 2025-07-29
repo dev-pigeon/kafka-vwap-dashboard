@@ -10,8 +10,24 @@ def within_date_range(val):
         return False
 
 
-def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
+def price_in_range(val):
+    min_price = .1
+    max_price = 5000
+    try:
+        return val > min_price and val < max_price
+    except:
+        return False
 
+
+def volume_in_range(val):
+    min_volume = 5000
+    try:
+        return val > min_volume
+    except:
+        return False
+
+
+def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
     df_range_adjusted = df_raw[df_raw[date_col].apply(
         within_date_range)].drop("Dividends", axis=1)
 
@@ -52,6 +68,15 @@ def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="S
     return df_cleaned
 
 
+def drop_outliers(df_split_adjusted, volume_col="Volume", price_col="Close"):
+    df_volume_check = df_split_adjusted[df_split_adjusted[volume_col].apply(
+        volume_in_range)]
+    df_outliers_dropped = df_volume_check[df_volume_check[price_col].apply(
+        price_in_range)]
+    return df_outliers_dropped
+
+
 df_raw = pd.read_csv("../data/all_stock_data.csv")
-df_cleaned = adjust_for_splits(df_raw)
-df_cleaned.to_csv("../data/stock_data_cleaned.csv", index=False)
+df_split_adjusted = adjust_for_splits(df_raw)
+df_no_outliers = drop_outliers(df_split_adjusted)
+df_no_outliers.to_csv("../data/stock_data_cleaned.csv", index=False)

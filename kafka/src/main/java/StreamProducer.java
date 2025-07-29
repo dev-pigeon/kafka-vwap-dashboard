@@ -38,16 +38,12 @@ public class StreamProducer {
             br.readLine(); // skip header
             String line;
             while ((line = br.readLine()) != null) {
-                try {
-                    StockRecord stockRecord = parseLine(line);
-                    String key = stockRecord.getTicker();
-                    ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
-                    producer.send(record);
-                    log.info("Sent Record: {}", stockRecord.toString());
-                    Thread.sleep(rate);
-                } catch (Exception e) {
-                    continue;
-                }
+                StockRecord stockRecord = parseLine(line);
+                String key = stockRecord.getTicker();
+                ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
+                producer.send(record);
+                log.info("Sent Record: {}", stockRecord.toString());
+                Thread.sleep(rate);
             }
 
         } catch (Exception e) {
