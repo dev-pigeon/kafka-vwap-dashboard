@@ -10,16 +10,35 @@ def within_date_range(val):
         return False
 
 
-def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
+def price_in_range(val):
+    min_price = .1
+    max_price = 5000
+    try:
+        return val > min_price and val < max_price
+    except:
+        return False
 
-    df_range_adjusted = df_raw[df_raw[date_col].apply(
-        within_date_range)].drop("Dividends", axis=1)
 
-    split_events = df_range_adjusted[df_range_adjusted[split_col] > 1]
+def volume_in_range(val):
+    min_volume = 5000
+    try:
+        return val > min_volume
+    except:
+        return False
+
+
+def drop_invalid_dates(df_raw, date_col="Date"):
+    df_valid_dates = df_raw[df_raw[date_col].apply(
+        within_date_range)]
+    return df_valid_dates
+
+
+def adjust_for_splits(df_valid_dates, date_col="Date", ticker_col="Ticker", split_col="Stock Splits"):
+    split_events = df_valid_dates[df_valid_dates[split_col] > 1]
 
     # Group by ticker
     adjusted_groups = []
-    grouped = df_range_adjusted.groupby(ticker_col)
+    grouped = df_valid_dates.groupby(ticker_col)
 
     for ticker, group_df in grouped:
         group_df = group_df.sort_values(date_col).copy()
@@ -52,6 +71,17 @@ def adjust_for_splits(df_raw, date_col="Date", ticker_col="Ticker", split_col="S
     return df_cleaned
 
 
+def drop_outliers(df_split_adjusted, volume_col="Volume", price_col="Close"):
+    df_volume_check = df_split_adjusted[df_split_adjusted[volume_col].apply(
+        volume_in_range)]
+    df_outliers_dropped = df_volume_check[df_volume_check[price_col].apply(
+        price_in_range)]
+    return df_outliers_dropped
+
+
 df_raw = pd.read_csv("../data/all_stock_data.csv")
-df_cleaned = adjust_for_splits(df_raw)
-df_cleaned.to_csv("../data/stock_data_cleaned.csv", index=False)
+df_no_dividends = df_raw.drop("Dividends", axis=1)
+df_valid_dates = drop_invalid_dates(df_no_dividends)
+df_split_adjusted = adjust_for_splits(df_valid_dates)
+df_no_outliers = drop_outliers(df_split_adjusted)
+df_no_outliers.to_csv("../data/stock_data_cleaned.csv", index=False)
