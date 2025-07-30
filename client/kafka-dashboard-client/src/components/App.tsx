@@ -1,14 +1,11 @@
-import useVwapList from "../hooks/useVwapList";
 import "../styles/App.css";
 import { Button, Stack } from "@mui/material";
+import VwapList from "./VwapList";
 
 function App() {
-  const VwapListHook = useVwapList();
   return (
     <div id="outer-container">
-      <Stack>
-        <Button id="basic-button">Press Me!</Button>
-      </Stack>
+      <VwapList />
     </div>
   );
 }
