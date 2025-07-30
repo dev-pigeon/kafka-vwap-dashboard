@@ -9,7 +9,7 @@ const useVwapList = () => {
     const getTopFive = async() => {
         try {
             console.log("sending top five request")
-            const topFive = sendRequest(url);
+            const topFive = await sendRequest(url);
             console.log(topFive);
         } catch(error) {
             if(error instanceof Error) {
