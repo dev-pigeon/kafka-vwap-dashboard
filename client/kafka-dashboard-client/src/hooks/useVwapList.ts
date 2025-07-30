@@ -10,7 +10,7 @@ export interface VwapRequestItem {
 
 export interface VwapListItem {
     ticker : string,
-    vwap : number,
+    vwap : string,
     last_updated: Dayjs,
 }
 
@@ -37,7 +37,7 @@ const useVwapList = () => {
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
                 ticker : requestItem.ticker,
-                vwap : requestItem.vwap,
+                vwap : requestItem.vwap.toFixed(2),
                 last_updated : dayjs(requestItem.last_updated),
             }
             updatedTopFive.push(listItem);
