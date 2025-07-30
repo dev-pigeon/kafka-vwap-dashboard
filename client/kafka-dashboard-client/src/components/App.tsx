@@ -1,7 +1,9 @@
+import useVwapList from "../hooks/useVwapList";
 import "../styles/App.css";
 import { Button, Stack } from "@mui/material";
 
 function App() {
+  const VwapListHook = useVwapList();
   return (
     <div id="outer-container">
       <Stack>

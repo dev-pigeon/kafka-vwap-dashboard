@@ -1,12 +1,5 @@
-export async function sendRequest(url : string) {
-    try {
-        const response = await fetch(url);
-        if(!response.ok) throw new Error();
-        const json_response = await response.json();
-        return json_response;
-    } catch(error) {
-        if(error instanceof Error) {
-            throw new Error(error.message);
-        }
-    }
+export async function sendRequest<T=unknown>(url : string) : Promise<T> {
+    const response = await fetch(url);
+    if(!response.ok) throw new Error("Networking response failed");
+    return await response.json();
 }
