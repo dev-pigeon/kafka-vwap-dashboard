@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { sendRequest } from "./Api";
-import dayjs, { Dayjs } from "dayjs";
 
-export interface VwapRequestItem {
+
+export type VwapListItem = {
     ticker : string,
     vwap : number,
-    last_updated: string
+    last_updated: string,
 }
 
-export interface VwapListItem {
-    ticker : string,
-    vwap : string,
-    last_updated: Dayjs,
+export const valueFormatter = (value : number | null) => {
+    return `$${value}`
 }
 
 const useVwapList = () => {
@@ -22,7 +20,7 @@ const useVwapList = () => {
 
     const getTopFive = async() => {
         try {
-            const topFiveRequest = await sendRequest<VwapRequestItem[]>(url);
+            const topFiveRequest = await sendRequest<VwapListItem[]>(url);
             const updatedTopFive = processTopFiveResponse(topFiveRequest);
             setVwapList(updatedTopFive);
         } catch(error) {
@@ -32,13 +30,12 @@ const useVwapList = () => {
         }
     }
 
-    const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) : VwapListItem[] => {
+    const processTopFiveResponse = (topFiveResponse : VwapListItem[]) : VwapListItem[] => {
         let updatedTopFive : VwapListItem[] = [];
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
-                ticker : requestItem.ticker,
-                vwap : requestItem.vwap.toFixed(2),
-                last_updated : dayjs(requestItem.last_updated),
+                ...requestItem,
+                vwap : parseInt(requestItem.vwap.toFixed(2)),
             }
             updatedTopFive.push(listItem);
         }
@@ -52,7 +49,6 @@ const useVwapList = () => {
         }, REQUEST_INTERVAL);
         return () => clearInterval(interval);
     },[]);
-
 
     return {
         vwapList
