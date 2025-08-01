@@ -45,6 +45,10 @@ const useVwapList = () => {
         return updatedTopFive;
     }
 
+    const valueFormatter = (value : number) => {
+        return `$${value}`
+    }
+
     useEffect(() => {
         getTopFive();
         const interval = setInterval(() => {

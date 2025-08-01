@@ -22,6 +22,15 @@ const VwapList = () => {
     },
   }));
   const vwapListHook = useVwapList();
+
+  // <BarChart
+  //   dataset={dataset}
+  //   yAxis={[{ scaleType: 'band', dataKey: 'month' }]}
+  //   series={[{ dataKey: 'seoul', label: 'Seoul rainfall', valueFormatter }]}
+  //   layout="horizontal"
+  //   grid={{ vertical: true }}
+  //   {...chartSetting}
+  // />
   return (
     <TableContainer sx={{ maxWidth: 300 }} component={Paper}>
       <Table>
