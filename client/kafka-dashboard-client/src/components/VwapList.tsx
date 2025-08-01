@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import useVwapList, { valueFormatter } from "../hooks/useVwapList";
 import { BarChart } from "@mui/x-charts";
 
@@ -8,7 +9,15 @@ const VwapList = () => {
   };
 
   return (
-    <div>
+    <Box
+      sx={{
+        backgroundColor: "#333333",
+        borderRadius: 10,
+        padding: "10px",
+        alignSelf: "center",
+        border: "2px solid #444",
+      }}
+    >
       {vwapListHook.vwapList.length > 0 && (
         <BarChart
           overflow={"visible"}
@@ -34,7 +43,7 @@ const VwapList = () => {
           colors={["#8454dc"]}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
