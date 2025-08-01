@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { sendRequest } from "./Api";
-import dayjs, { Dayjs } from "dayjs";
 
 export interface VwapRequestItem {
     ticker : string,
@@ -8,10 +7,14 @@ export interface VwapRequestItem {
     last_updated: string
 }
 
-export interface VwapListItem {
+export type VwapListItem = {
     ticker : string,
-    vwap : string,
-    last_updated: Dayjs,
+    vwap : number,
+    last_updated: string,
+}
+
+export const valueFormatter = (value : number | null) => {
+    return `$${value}`
 }
 
 const useVwapList = () => {
@@ -37,16 +40,12 @@ const useVwapList = () => {
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
                 ticker : requestItem.ticker,
-                vwap : requestItem.vwap.toFixed(2),
-                last_updated : dayjs(requestItem.last_updated),
+                vwap : parseInt(requestItem.vwap.toFixed(2)),
+                last_updated : requestItem.last_updated,
             }
             updatedTopFive.push(listItem);
         }
         return updatedTopFive;
-    }
-
-    const valueFormatter = (value : number) => {
-        return `$${value}`
     }
 
     useEffect(() => {
@@ -56,7 +55,6 @@ const useVwapList = () => {
         }, REQUEST_INTERVAL);
         return () => clearInterval(interval);
     },[]);
-
 
     return {
         vwapList
