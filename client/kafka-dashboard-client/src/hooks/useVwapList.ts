@@ -5,7 +5,12 @@ import { sendRequest } from "./Api";
 export type VwapListItem = {
     ticker : string,
     vwap : number,
-    last_updated: string,
+}
+
+type VwapRequestItem = {
+    ticker : string,
+    vwap : number,
+    last_updated : string,
 }
 
 export const valueFormatter = (value : number | null) => {
@@ -20,8 +25,9 @@ const useVwapList = () => {
 
     const getTopFive = async() => {
         try {
-            const topFiveRequest = await sendRequest<VwapListItem[]>(url);
+            const topFiveRequest = await sendRequest<VwapRequestItem[]>(url);
             const updatedTopFive = processTopFiveResponse(topFiveRequest);
+            console.log(updatedTopFive);
             setVwapList(updatedTopFive);
         } catch(error) {
             if(error instanceof Error) {
@@ -34,8 +40,8 @@ const useVwapList = () => {
         let updatedTopFive : VwapListItem[] = [];
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
-                ...requestItem,
                 vwap : parseInt(requestItem.vwap.toFixed(2)),
+                ticker : requestItem.ticker,
             }
             updatedTopFive.push(listItem);
         }
