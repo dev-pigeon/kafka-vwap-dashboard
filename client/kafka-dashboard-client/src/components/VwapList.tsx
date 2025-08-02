@@ -1,9 +1,12 @@
 import { Box } from "@mui/material";
-import useVwapList, { valueFormatter } from "../hooks/useVwapList";
+import { valueFormatter, type VwapListItem } from "../hooks/useVwapList";
 import { BarChart } from "@mui/x-charts";
 
-const VwapList = () => {
-  const vwapListHook = useVwapList();
+interface VwapListProps {
+  vwapList: VwapListItem[];
+}
+
+const VwapList = ({ vwapList }: VwapListProps) => {
   const styleLabel = {
     fontWeight: 800,
   };
@@ -18,12 +21,12 @@ const VwapList = () => {
         border: "2px solid #444",
       }}
     >
-      {vwapListHook.vwapList.length > 0 && (
+      {vwapList.length > 0 && (
         <BarChart
           overflow={"visible"}
           height={window.innerHeight / 2}
           width={window.innerWidth / 2}
-          dataset={vwapListHook.vwapList}
+          dataset={vwapList}
           yAxis={[
             {
               scaleType: "band",
