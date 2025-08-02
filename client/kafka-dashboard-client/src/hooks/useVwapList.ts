@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { sendRequest } from "./Api";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 
 export type VwapListItem = {
@@ -28,8 +28,7 @@ const useVwapList = () => {
     const getTopFive = async() => {
         try {
             const topFiveRequest = await sendRequest<VwapRequestItem[]>(url);
-            const updatedTopFive = processTopFiveResponse(topFiveRequest);
-            setVwapList(updatedTopFive);
+            processTopFiveResponse(topFiveRequest);
         } catch(error) {
             if(error instanceof Error) {
                 throw new Error(error.message);
@@ -37,7 +36,8 @@ const useVwapList = () => {
         }
     }
 
-    const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) : VwapListItem[] => {
+
+    const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) => {
         if(topFiveResponse.length > 0) setLastUpdated(dayjs(topFiveResponse[0].last_updated).format('hh:mm:ss A'));
         let updatedTopFive : VwapListItem[] = [];
         for(const requestItem of topFiveResponse) {
@@ -47,7 +47,7 @@ const useVwapList = () => {
             }
             updatedTopFive.push(listItem);
         }
-        return updatedTopFive;
+        setVwapList(updatedTopFive);
     }
 
     useEffect(() => {
