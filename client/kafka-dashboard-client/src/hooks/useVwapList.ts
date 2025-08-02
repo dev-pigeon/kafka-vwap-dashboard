@@ -18,6 +18,7 @@ export const valueFormatter = (value : number | null) => {
     return `$${value}`
 }
 
+
 const useVwapList = () => {
     
     const REQUEST_INTERVAL = 20_000;
@@ -58,12 +59,10 @@ const useVwapList = () => {
         return () => clearInterval(interval);
     },[]);
 
-    useEffect(() => {
-        console.log(lastUpdated);
-    },[lastUpdated])
 
     return {
-        vwapList
+        vwapList,
+        lastUpdated
     }
 };
 
