@@ -8,14 +8,14 @@
 
 
 #header {
-  width: 90vw;
+  width: 100vw;
   position: fixed;
   top: 0;
   z-index: 1000;
   left: 50%;
   transform: translateX(-50%);
   color: #1c1c1c !important;
-  border-bottom: 5px solid #444;
+  border-bottom: 3px solid #444;
   border-left: 2.5px solid #444;
   border-right: 2.5px solid #444;
   

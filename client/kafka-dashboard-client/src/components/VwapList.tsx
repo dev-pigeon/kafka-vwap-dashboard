@@ -11,7 +11,7 @@ const VwapList = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#333333",
+        backgroundColor: "#2f2f3f",
         borderRadius: 10,
         padding: "10px",
         alignSelf: "center",
