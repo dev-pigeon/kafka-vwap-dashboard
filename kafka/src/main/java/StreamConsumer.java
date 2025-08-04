@@ -12,10 +12,6 @@ import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Suppressed;
 import org.apache.kafka.streams.state.KeyValueStore;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import org.apache.kafka.streams.state.Stores;
 import org.apache.kafka.streams.kstream.Named;
 
@@ -46,24 +42,7 @@ public class StreamConsumer {
                 new WindowSerde()));
         KStream<String, StockRecord> stream = streamsBuilder.stream("stock-records");
 
-        stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), STORE_NAME)
-                .filter((key, vwap) -> vwap != null && !Double.isNaN(vwap))
-                .foreach((ticker, vwap) -> {
-                    try (Connection conn = DriverManager.getConnection(
-                            "jdbc:postgresql://localhost:5432/kafka_dashboard",
-                            "kafka_user",
-                            "kafka_password");
-                            PreparedStatement stmt = conn.prepareStatement(
-                                    "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap, last_updated) VALUES (?, ?, NOW()) ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap, last_updated = NOW();")) {
-
-                        stmt.setString(1, ticker);
-                        stmt.setDouble(2, vwap);
-                        stmt.executeUpdate();
-
-                    } catch (SQLException e) {
-                        log.error("PostgreSQL insert error: {}", e.getMessage());
-                    }
-                });
+        stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), STORE_NAME);
 
         KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), props);
 
