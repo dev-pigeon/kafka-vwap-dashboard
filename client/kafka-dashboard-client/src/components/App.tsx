@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       <div id="header">
-        <Header />
+        <Header lastUpdated={vwapListHook.lastUpdated} />
       </div>
       <div id="outer-container">
         <VwapList vwapList={vwapListHook.vwapList} />
