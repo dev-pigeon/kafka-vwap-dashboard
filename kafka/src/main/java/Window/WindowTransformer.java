@@ -45,10 +45,8 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
                 KeyValue<String, Window> entry = iter.next();
                 Window window = entry.value;
                 Double vwap = window.calculateVWAP();
-                // store in hashmap here
                 cache.put(entry.key, vwap);
-                context.forward(entry.key, vwap);
-                store.put(entry.key, window);
+                store.put(entry.key, window); // leave this in
             }
         }
         context.commit();
