@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
     private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
     private final String STORE_NAME = "vwap-store";
-    private final int INTERVAL = 20; // seconds
+    private final int INTERVAL = 5; // seconds
     private final String DB_URL = "jdbc:postgresql://localhost:5432/kafka_dashboard";
     private final String DB_USER = "kafka_user";
     private final String DB_PWD = "kafka_password";
