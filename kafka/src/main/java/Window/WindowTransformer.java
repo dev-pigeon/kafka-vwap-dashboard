@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
     private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
@@ -17,12 +18,14 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
+    private ConcurrentHashMap<String, Double> cache = new ConcurrentHashMap<>();
 
     @Override
     public void init(ProcessorContext context) {
         this.context = context;
         this.store = (KeyValueStore<String, Window>) context.getStateStore(STORE_NAME);
-        this.punctuator = context.schedule(Duration.ofSeconds(INTERVAL), PunctuationType.WALL_CLOCK_TIME, this::punctuate);
+        this.punctuator = context.schedule(Duration.ofSeconds(INTERVAL), PunctuationType.WALL_CLOCK_TIME,
+                this::punctuate);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
         }
         window.updateWindow(value, System.currentTimeMillis());
         store.put(key, window);
-        return null; 
+        return null;
     }
 
     private void punctuate(long timestamp) {
@@ -42,11 +45,14 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
                 KeyValue<String, Window> entry = iter.next();
                 Window window = entry.value;
                 Double vwap = window.calculateVWAP();
+                // store in hashmap here
+                cache.put(entry.key, vwap);
                 context.forward(entry.key, vwap);
                 store.put(entry.key, window);
             }
         }
         context.commit();
+        cache.clear();
     }
 
     @Override
