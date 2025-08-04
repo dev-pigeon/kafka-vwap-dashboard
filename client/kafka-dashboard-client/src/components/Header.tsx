@@ -1,6 +1,10 @@
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, Chip } from "@mui/material";
 
-const Header = () => {
+interface HeaderProps {
+  lastUpdated: string | null;
+}
+
+const Header = ({ lastUpdated }: HeaderProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar sx={{ backgroundColor: "#222233" }} position="static">
@@ -14,6 +18,13 @@ const Header = () => {
             >
               2-Minute Sliding Window · Simulated Stream
             </Typography>
+            {lastUpdated && (
+              <Chip
+                label={`Last Updated: ${lastUpdated}`}
+                color="success"
+                size="small"
+              />
+            )}
           </Box>
         </Toolbar>
       </AppBar>
