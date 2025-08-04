@@ -7,14 +7,23 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Map;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
-    private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
+    private final java.util.logging.Logger log = LoggerFactory.getLogger(WindowTransformer.class);
     private final String STORE_NAME = "vwap-store";
     private final int INTERVAL = 20; // seconds
+    private final String DB_URL = "jdbc:postgresql://localhost:5432/kafka_dashboard";
+    private final String DB_USER = "kafka_user";
+    private final String DB_PWD = "kafka_password";
+    private final int BATCH_SIZE = 250;
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
@@ -50,7 +59,36 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
             }
         }
         context.commit();
+        batchInsert(timestamp);
         cache.clear();
+    }
+
+    private void batchInsert(long timestamp) {
+        log.info("Initializing batch insert...");
+        final String query = "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap, last_updated) " +
+                "VALUES (?, ?, ?) " +
+                "ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap, last_updated = EXCLUDED.last_updated";
+        int counter = 0;
+        try (
+                Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
+                PreparedStatement statement = conn.prepareStatement(query);) {
+            for (Map.Entry<String, Double> entry : cache.entrySet()) {
+                statement.setString(1, entry.getKey());
+                statement.setDouble(2, entry.getValue());
+                statement.setLong(3, timestamp);
+                statement.addBatch();
+                ++counter;
+                if (counter >= BATCH_SIZE) {
+                    // artificially control batch size
+                    statement.executeBatch();
+                    counter = 0;
+                }
+            }
+            statement.executeBatch();
+            log.info("batch insert complete");
+        } catch (SQLException e) {
+            log.error("PostgreSQL insert error: {}", e);
+        }
     }
 
     @Override
