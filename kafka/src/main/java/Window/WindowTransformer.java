@@ -19,11 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WindowTransformer implements Transformer<String, StockRecord, KeyValue<String, Double>> {
     private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
     private final String STORE_NAME = "vwap-store";
-    private final int INTERVAL = 5; // seconds
+    private final int INTERVAL = 1; // seconds
     private final String DB_URL = "jdbc:postgresql://localhost:5432/kafka_dashboard";
     private final String DB_USER = "kafka_user";
     private final String DB_PWD = "kafka_password";
-    private final int BATCH_SIZE = 250;
+    private final int BATCH_SIZE = 500;
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
     private Cancellable punctuator;
@@ -73,7 +73,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
                 "ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap, last_updated = NOW();";
         int counter = 0;
         try (
-                Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PWD);
+                Connection conn = Database.getConnection();
                 PreparedStatement statement = conn.prepareStatement(query);) {
             for (Map.Entry<String, Double> entry : cache.entrySet()) {
                 statement.setString(1, entry.getKey());

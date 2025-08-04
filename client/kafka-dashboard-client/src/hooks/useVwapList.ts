@@ -21,7 +21,7 @@ export const valueFormatter = (value : number | null) => {
 
 const useVwapList = () => {
     
-    const REQUEST_INTERVAL = 3_750;
+    const REQUEST_INTERVAL = 1000;
     const url = "http://localhost:5335/top-five";
     const [vwapList, setVwapList] = useState<VwapListItem[]>([]);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
