@@ -12,10 +12,6 @@ import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Suppressed;
 import org.apache.kafka.streams.state.KeyValueStore;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import org.apache.kafka.streams.state.Stores;
 import org.apache.kafka.streams.kstream.Named;
 
