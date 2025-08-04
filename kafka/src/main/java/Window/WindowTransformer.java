@@ -66,7 +66,8 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
     }
 
     private void batchInsert(long timestamp) {
-        log.info("Initializing batch insert...");
+        final long start = System.nanoTime();
+        final int insertSize = cache.size();
         final String query = "INSERT INTO kafka_dashboard.stock_vwap (ticker, vwap, last_updated) " +
                 "VALUES (?, ?, NOW()) " +
                 "ON CONFLICT (ticker) DO UPDATE SET vwap = EXCLUDED.vwap, last_updated = NOW();";
@@ -86,7 +87,8 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
                 }
             }
             statement.executeBatch();
-            log.info("batch insert complete");
+            final long end = System.nanoTime();
+            log.info("Batch insert complete: Inserted {} records in {}ms", insertSize, (end - start) / 1_000_000);
         } catch (SQLException e) {
             log.error("PostgreSQL insert error: {}", e);
         }
