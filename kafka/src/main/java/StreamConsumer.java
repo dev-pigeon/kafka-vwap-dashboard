@@ -18,6 +18,11 @@ import org.apache.kafka.streams.kstream.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import StockRecord.StockRecord;
+import StockRecord.StockRecordSerde;
+import Window.WindowSerde;
+import Window.WindowTransformer;
+
 public class StreamConsumer {
     private final static Logger log = LoggerFactory.getLogger(StreamConsumer.class);
     private static final String STORE_NAME = "vwap-store";

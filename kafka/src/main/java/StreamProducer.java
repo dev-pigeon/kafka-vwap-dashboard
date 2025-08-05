@@ -4,6 +4,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import StockRecord.StockRecord;
+
 import org.apache.kafka.clients.producer.*;
 
 public class StreamProducer {
