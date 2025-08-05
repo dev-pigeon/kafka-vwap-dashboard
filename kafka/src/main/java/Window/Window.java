@@ -23,7 +23,7 @@ public class Window {
         return recordDeque;
     }
 
-    public double size() {
+    public int size() {
         return recordDeque.size();
     }
 
@@ -53,7 +53,7 @@ public class Window {
         return false;
     }
 
-    private void evictRecord(StockRecord record) {
+    protected void evictRecord(StockRecord record) {
         double recordVolume = record.getVolume();
         runningProductSum -= (record.getClosePrice() * recordVolume);
         runningVolumeSum -= recordVolume;
