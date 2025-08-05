@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import StockRecord.StockRecord;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
@@ -25,9 +24,6 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
     private final Logger log = LoggerFactory.getLogger(WindowTransformer.class);
     private final String STORE_NAME = "vwap-store";
     private final int INTERVAL = 1; // seconds
-    private final String DB_URL = "jdbc:postgresql://localhost:5432/kafka_dashboard";
-    private final String DB_USER = "kafka_user";
-    private final String DB_PWD = "kafka_password";
     private final int BATCH_SIZE = 500;
     private ProcessorContext context;
     private KeyValueStore<String, Window> store;
@@ -37,7 +33,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
     @Override
     public void init(ProcessorContext context) {
         this.context = context;
-        this.store = (KeyValueStore<String, Window>) context.getStateStore(STORE_NAME);
+        this.store = context.getStateStore(STORE_NAME);
         this.punctuator = context.schedule(Duration.ofSeconds(INTERVAL), PunctuationType.WALL_CLOCK_TIME,
                 this::punctuate);
     }

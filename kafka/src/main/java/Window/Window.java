@@ -14,6 +14,7 @@ public class Window {
     private double runningVolumeSum = 0.0;
     private final double RECORD_LIFESPAN = 120_000;
     private final double MIN_VOLUME_THRESHOLD = 1e-6;
+    @SuppressWarnings("unused")
     private final Logger log = LoggerFactory.getLogger(Window.class);
 
     private Deque<StockRecord> recordDeque = new LinkedList<>();

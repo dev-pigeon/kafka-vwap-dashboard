@@ -1,17 +1,10 @@
-import java.time.Duration;
 import java.util.Properties;
 
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.kstream.Suppressed;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
 import org.apache.kafka.streams.kstream.Named;
 
@@ -39,6 +32,7 @@ public class StreamConsumer {
         consume(props);
     }
 
+    @SuppressWarnings("deprecation")
     private static void consume(Properties props) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
