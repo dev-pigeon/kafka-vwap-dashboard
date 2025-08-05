@@ -47,10 +47,10 @@ public class Window {
     }
 
     private boolean recordIsValid(long recordTimeStamp, long now) {
-        if ((now - recordTimeStamp) < RECORD_LIFESPAN) {
-            return true;
+        if ((now - recordTimeStamp) > RECORD_LIFESPAN) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     protected void evictRecord(StockRecord record) {
@@ -60,7 +60,7 @@ public class Window {
         recordDeque.pop();
     }
 
-    private void checkRecordMembership(long now) {
+    protected void checkRecordMembership(long now) {
         while (!recordDeque.isEmpty()) {
             StockRecord front = recordDeque.peek();
             if (!recordIsValid(front.getTimeStamp(), now)) {

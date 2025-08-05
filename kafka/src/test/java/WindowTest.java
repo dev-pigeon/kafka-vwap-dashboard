@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Random;
+import java.beans.Transient;
 import java.util.ArrayList;
 
 class WindowTest {
@@ -59,6 +60,18 @@ class WindowTest {
 
         assertEquals(expectedVolume, window.getRunningVolumeSum());
         assertEquals(expectedProduct, window.getRunningProductSum());
+        assertEquals(expectedSize, window.size());
+    }
+
+    @Test
+    void recordsExpire() {
+        long time = System.currentTimeMillis();
+        long expiredTime = time - 150_000;
+        Window window = new Window();
+        StockRecord expiredRecord = new StockRecord("AAPL", 100.0, 100.0, expiredTime);
+        window.updateWindow(expiredRecord);
+        final int expectedSize = 0;
+        window.checkRecordMembership(time);
         assertEquals(expectedSize, window.size());
     }
 
