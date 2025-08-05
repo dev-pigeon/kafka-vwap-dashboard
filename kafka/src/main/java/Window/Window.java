@@ -23,7 +23,7 @@ public class Window {
         return recordDeque;
     }
 
-    public double size() {
+    public int size() {
         return recordDeque.size();
     }
 
@@ -35,32 +35,28 @@ public class Window {
         return runningVolumeSum;
     }
 
-    public void updateWindow(StockRecord record, long now) {
+    public void updateWindow(StockRecord record) {
         double recordVolume = record.getVolume();
         runningProductSum += (record.getClosePrice() * recordVolume);
         runningVolumeSum += recordVolume;
         recordDeque.add(record);
     }
 
-    private void addRecord(StockRecord record) {
-        recordDeque.add(record);
-    }
-
     private boolean recordIsValid(long recordTimeStamp, long now) {
-        if ((now - recordTimeStamp) < RECORD_LIFESPAN) {
-            return true;
+        if ((now - recordTimeStamp) > RECORD_LIFESPAN) {
+            return false;
         }
-        return false;
+        return true;
     }
 
-    private void evictRecord(StockRecord record) {
+    protected void evictRecord(StockRecord record) {
         double recordVolume = record.getVolume();
         runningProductSum -= (record.getClosePrice() * recordVolume);
         runningVolumeSum -= recordVolume;
         recordDeque.pop();
     }
 
-    private void checkRecordMembership(long now) {
+    protected void checkRecordMembership(long now) {
         while (!recordDeque.isEmpty()) {
             StockRecord front = recordDeque.peek();
             if (!recordIsValid(front.getTimeStamp(), now)) {

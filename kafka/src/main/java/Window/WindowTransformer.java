@@ -43,7 +43,7 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
         if (window == null) {
             window = new Window();
         }
-        window.updateWindow(value, System.currentTimeMillis());
+        window.updateWindow(value);
         store.put(key, window);
         return null;
     }
