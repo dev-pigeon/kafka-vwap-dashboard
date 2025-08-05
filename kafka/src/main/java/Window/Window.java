@@ -35,7 +35,7 @@ public class Window {
         return runningVolumeSum;
     }
 
-    public void updateWindow(StockRecord record, long now) {
+    public void updateWindow(StockRecord record) {
         double recordVolume = record.getVolume();
         runningProductSum += (record.getClosePrice() * recordVolume);
         runningVolumeSum += recordVolume;
