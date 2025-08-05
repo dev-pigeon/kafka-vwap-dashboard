@@ -1,11 +1,31 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Random;
+import java.util.ArrayList;
 
 class WindowTest {
+
+    private static ArrayList<StockRecord> records = new ArrayList<>();
+
+    @BeforeAll
+    static void initialize() {
+        final String ticker = "AAPL";
+        Random random = new Random();
+        final int min = 1;
+        final int max = 100;
+        for (int i = 0; i < 5; ++i) {
+            final int price = random.nextInt(max - min + 1) + min;
+            final int volume = random.nextInt(max - min + 1) + min;
+            StockRecord record = new StockRecord(ticker, price, volume, System.currentTimeMillis());
+            records.add(record);
+        }
+    }
 
     @Test
     void canInitialize() {
         Window window = new Window();
         assertNotNull(window);
     }
+
 }
