@@ -1,3 +1,5 @@
+package Window;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serializer;
 

@@ -1,3 +1,5 @@
+package StockRecord;
+
 import org.apache.kafka.common.serialization.Deserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

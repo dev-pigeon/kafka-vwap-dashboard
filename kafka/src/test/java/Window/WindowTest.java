@@ -1,8 +1,12 @@
+package Window;
+
 import org.junit.jupiter.api.Test;
+
+import StockRecord.StockRecord;
+
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Random;
-import java.beans.Transient;
 import java.util.ArrayList;
 
 class WindowTest {

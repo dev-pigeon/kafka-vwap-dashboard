@@ -4,6 +4,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import StockRecord.StockRecord;
+
 import org.apache.kafka.clients.producer.*;
 
 public class StreamProducer {
@@ -29,7 +31,7 @@ public class StreamProducer {
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "StockRecordSerializer");
+        props.put("value.serializer", "StockRecord.StockRecordSerializer");
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
         try (Producer<String, StockRecord> producer = new KafkaProducer<>(props);
