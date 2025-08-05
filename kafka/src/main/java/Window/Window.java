@@ -42,10 +42,6 @@ public class Window {
         recordDeque.add(record);
     }
 
-    private void addRecord(StockRecord record) {
-        recordDeque.add(record);
-    }
-
     private boolean recordIsValid(long recordTimeStamp, long now) {
         if ((now - recordTimeStamp) > RECORD_LIFESPAN) {
             return false;
