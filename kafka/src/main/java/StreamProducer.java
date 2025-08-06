@@ -25,11 +25,11 @@ public class StreamProducer {
 
     private static void streamFile() {
         rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
-        String filePath = "../data/stock_data_cleaned.csv";
+        String filePath = "./data/stock_data_cleaned.csv";
         log.info("Opening file...");
 
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", "kafka-broker:9092");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "StockRecord.StockRecordSerializer");
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
