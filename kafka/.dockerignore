@@ -1,0 +1,25 @@
+# Ignore Git metadata
+
+.git
+.gitignore
+
+# Maven build output and target folders
+
+target/
+out/
+
+# IDE/editor files
+
+.idea/
+.vscode/
+\*.iml
+
+# Logs and temp files
+
+_.log
+_.tmp
+\*.swp
+
+# OS generated files
+
+.DS_Store
