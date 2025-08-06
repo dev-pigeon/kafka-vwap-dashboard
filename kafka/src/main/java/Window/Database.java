@@ -8,7 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class Database {
     private static final HikariDataSource datasource;
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/kafka_dashboard";
+    private static final String DB_URL = "jdbc:postgresql://db:5432/kafka_dashboard";
     private static final String DB_USER = "kafka_user";
     private static final String DB_PWD = "kafka_password";
 
