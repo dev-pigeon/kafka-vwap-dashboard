@@ -39,6 +39,17 @@ services:
     networks:
       - kafka_dashboard
 
+  kafka:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+    depends_on:
+      - db
+    networks:
+      - kafka_dashboard
+
 networks:
   kafka_dashboard:
 
