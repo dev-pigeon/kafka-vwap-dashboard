@@ -25,7 +25,7 @@ public class StreamProducer {
 
     private static void streamFile() {
         rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
-        String filePath = "../data/stock_data_cleaned.csv";
+        String filePath = "./data/stock_data_cleaned.csv";
         log.info("Opening file...");
 
         Properties props = new Properties();
