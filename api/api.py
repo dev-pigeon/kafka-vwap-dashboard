@@ -3,7 +3,7 @@ from db import get_connection
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173"])
+CORS(app)
 
 
 def get_resources():
