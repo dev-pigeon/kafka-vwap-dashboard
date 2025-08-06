@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2  # type: ignore
 
 
 def get_connection():
@@ -6,6 +6,6 @@ def get_connection():
         dbname="kafka_dashboard",
         user="kafka_user",
         password="kafka_password",
-        host="localhost",
+        host="db",  # must match what is in docker-compose
         port="5432"
     )

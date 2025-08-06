@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "5335:5335"
+    depends_on:
+      - db
+    networks:
+      - kafka_dashboard
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: kafka_dashboard
+      POSTGRES_USER: kafka_user
+      POSTGRES_PASSWORD: kafka_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # below ensures the database is created when things are built
+      - ./api/create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+    networks:
+      - kafka_dashboard
+
+  client:
+    build:
+      context: ./client/kafka-dashboard-client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - kafka_dashboard
+
+networks:
+  kafka_dashboard:
+
+volumes:
+  pgdata:
