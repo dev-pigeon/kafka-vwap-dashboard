@@ -9,22 +9,15 @@ import StockRecord.StockRecord;
 import org.apache.kafka.clients.producer.*;
 
 public class StreamProducer {
-    private static Long rate = null;
-    private static final long DEFAULT_RATE = 250;
+    private static final long STREAM_RATE_MS = 1;
     private static final String TOPIC = "stock-records";
     private static final Logger log = LoggerFactory.getLogger(StreamProducer.class);
 
     public static void main(String[] args) {
-
-        if (args.length > 0) {
-            String rate_string = args[0];
-            rate = Long.parseLong(rate_string);
-        }
         streamFile();
     }
 
     private static void streamFile() {
-        rate = (long) ((rate != null) ? rate : DEFAULT_RATE);
         String filePath = "./data/stock_data_cleaned.csv";
         log.info("Opening file...");
 
@@ -44,7 +37,7 @@ public class StreamProducer {
                 String key = stockRecord.getTicker();
                 ProducerRecord<String, StockRecord> record = new ProducerRecord<>(TOPIC, key, stockRecord);
                 producer.send(record);
-                Thread.sleep(rate);
+                Thread.sleep(STREAM_RATE_MS);
             }
 
         } catch (Exception e) {
