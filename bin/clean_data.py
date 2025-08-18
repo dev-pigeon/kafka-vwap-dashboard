@@ -79,9 +79,9 @@ def drop_outliers(df_split_adjusted, volume_col="Volume", price_col="Close"):
     return df_outliers_dropped
 
 
-df_raw = pd.read_csv("../data/all_stock_data.csv")
+df_raw = pd.read_csv("../kafka/data/all_stock_data.csv")
 df_no_dividends = df_raw.drop("Dividends", axis=1)
 df_valid_dates = drop_invalid_dates(df_no_dividends)
 df_split_adjusted = adjust_for_splits(df_valid_dates)
 df_no_outliers = drop_outliers(df_split_adjusted)
-df_no_outliers.to_csv("../data/stock_data_cleaned.csv", index=False)
+df_no_outliers.to_csv("../kafka/data/stock_data_cleaned.csv", index=False)
