@@ -8,12 +8,13 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 
 ## Tech Stack &nbsp; 🧰
 
-- Java
+- Java / JUnit
 - Apache Kafka
   -PostgreSQL
 - Python / Flask
 - React / TypeScript
 - Docker / Docker Compose
+- MUI
 
 <br>
 
