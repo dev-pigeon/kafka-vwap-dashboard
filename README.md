@@ -1,12 +1,12 @@
 # Kafka VWAP Dashboard
 
-## Overview
+## Overview &nbsp; 🔎
 
 This project calculates **volume weighted average price (VWAP)** for simluated real-time stock trade data using Kafka. It processes the data in Java with a two-minute sliding window, batch inserts the results into PostgreSQL, and serves them through a Flask API to a React frontend. It was created so that I could gain a deeper understanding of real-time analytics, data processing, full-stack integration, containerization, and Apache Kafka.
 
 <br>
 
-## Tech Stack
+## Tech Stack &nbsp; 🧰
 
 - Java
 - Apache Kafka
@@ -17,7 +17,7 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 
 <br>
 
-## Requirements
+## Requirements &nbsp; 📝
 
 - **Unix-based system** (Linux or macOS)
 - **Docker Desktop** installed and running
@@ -27,7 +27,7 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 
 <br>
 
-## System Architecture
+## System Architecture &nbsp; ⚙️
 
 The system consists of four components working together to process and display real-time VWAP data:
 
@@ -38,7 +38,7 @@ The system consists of four components working together to process and display r
 
 <br>
 
-## Components
+## Components &nbsp; 🔗
 
 - [`api/`](api/README.md) – Flask REST API serving VWAP data to the frontend.
 - [`bin/`](bin/README.md) – Utility scripts to set up, reset, and run the demo environment.
@@ -47,7 +47,7 @@ The system consists of four components working together to process and display r
 
 <br>
 
-## Setup & Run
+## Setup & Run &nbsp; 🚀
 
 Clone the repository
 
