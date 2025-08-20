@@ -28,24 +28,15 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 <br>
 
 ## Setup & Run &nbsp; 🚀 
-Clone the repository
+Clone the repository:
 ```bash
 git clone https://github.com/dev-pigeon/kafka-dashboard.git
 ```
-Move to the correct directory
+Then run:
 ```bash
 cd kafka-dashboard
-```
-Give permissions to the setup script:
-```bash
 chmod +x bin/setup.sh
-```
-Download and clean the dataset:
-```bash
 ./bin/setup.sh
-```
-Build the images and start the container:
-```bash
 docker-compose up --build
 ```
 Click [here](http://localhost:80) or open your browser of choice and navigate to http://localhost:80
