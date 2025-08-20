@@ -59,6 +59,6 @@ The system consists of four components working together to process and display r
 - [`api/`](api/README.md) – Flask REST API serving VWAP data to the frontend.
 - [`bin/`](bin/README.md) – Utility scripts to set up, reset, and run the demo environment.
 - [`kafka/`](kafka/README.md) – Kafka producer, consumer, and custom transformer to compute VWAPs.
-- [`client/`](client/README.md) – Frontend application to display VWAP data.
+- [`client/`](client/kafka-dashboard-client/README.md) – Frontend application to display VWAP data.
 
 <br>
