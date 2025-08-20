@@ -2,7 +2,9 @@
 
 ## Overview
 
-This project calculates volume-weighted average price (VWAP) for simluated real-time stock trade data using Kafka. It processes the data in Java with a two-minute sliding window, batch inserts the results into PostgreSQL, and serves them through a Flask API to a React frontend. It was created so that I could gain a deeper understanding of real-time analytics, data processing, full-stack integration, containerization, and Apache Kafka.
+This project calculates **volume weighted average price (VWAP)** for simluated real-time stock trade data using Kafka. It processes the data in Java with a two-minute sliding window, batch inserts the results into PostgreSQL, and serves them through a Flask API to a React frontend. It was created so that I could gain a deeper understanding of real-time analytics, data processing, full-stack integration, containerization, and Apache Kafka.
+
+<br>
 
 ## Tech Stack
 
@@ -13,6 +15,8 @@ This project calculates volume-weighted average price (VWAP) for simluated real-
 - React / TypeScript
 - Docker / Docker Compose
 
+<br>
+
 ## Requirements
 
 - **Unix-based system** (Linux or macOS)
@@ -20,6 +24,8 @@ This project calculates volume-weighted average price (VWAP) for simluated real-
 - **Python 3.x** (used to run `setup.sh` and manage virtual environment)
 
 > Note: Java, Kafka, and PostgreSQL are all containerized — you only need Python locally to run the setup script.
+
+<br>
 
 ## System Architecture
 
@@ -29,6 +35,8 @@ The system consists of four components working together to process and display r
 2. **StreamConsumer + Window + WindowTransformer (Kafka Consumer)** - Consumes records from the Kafka topic and maintains a two-minute sliding window per ticker. Uses the windows to calculate VWAPs and batch inserts them into PostgreSQL.
 3. **PostgreSQL Database** - Stores the current VWAP for each ticker. Provides storage for the Flask API to query.
 4. **Flask API + React Frontend** - The API exposes endpoints to retrieve the lateset VWAPs.The frontend visualizes these values.
+
+<br>
 
 ## Components
 
@@ -40,6 +48,18 @@ The system consists of four components working together to process and display r
 <br>
 
 ## Setup & Run
+
+Clone the repository
+
+```bash
+git clone https://github.com/dev-pigeon/kafka-dashboard.git
+```
+
+Move to the correct directory
+
+```bash
+cd kafka-dashboard
+```
 
 Give permissions to the setup script:
 
