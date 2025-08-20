@@ -34,7 +34,7 @@ git clone https://github.com/dev-pigeon/kafka-vwap-dashboard.git
 ```
 Then run:
 ```bash
-cd kafka-dashboard
+cd kafka-vwap-dashboard
 chmod +x bin/setup.sh
 ./bin/setup.sh
 docker-compose up --build
