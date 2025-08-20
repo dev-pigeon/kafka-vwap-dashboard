@@ -30,7 +30,7 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 ## Setup & Run &nbsp; 🚀 
 Clone the repository:
 ```bash
-git clone https://github.com/dev-pigeon/kafka-dashboard.git
+git clone https://github.com/dev-pigeon/kafka-vwap-dashboard.git
 ```
 Then run:
 ```bash
