@@ -16,19 +16,9 @@ This directory contains various files and scripts required to initialize the pro
 ## Setup & Run
 
 **Watch out! ⚠️ :** Make sure to run the command `chmod +x [file_name]` for all shell scripts.
+<br>
 
 ### setup.sh
-
-Before running the setup script, create a virtual environment and install the necessary dependencies:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip3 install -r requirements.txt
-./setup.sh
-```
-
-Then run:
 
 ```bash
 ./setup.sh
@@ -36,11 +26,15 @@ Then run:
 
 **Note:** `setup.sh` internally calls `clean_data.py` to clean/engineer the dataset. `clean_data.py` is not meant to be run standalone.
 
+<br>
+
 ### reset.sh
 
 ```bash
 ./reset.sh
 ```
+
+<br>
 
 ### run.sh
 
@@ -49,6 +43,9 @@ Then run:
 ```
 
 - **Example:** `./run.sh StreamProducer`
+
+<br>
+<br>
 
 ## Notes
 
