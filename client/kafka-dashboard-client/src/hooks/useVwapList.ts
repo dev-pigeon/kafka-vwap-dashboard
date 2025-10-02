@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { sendRequest } from "./Api";
 import dayjs from "dayjs";
+import {socket} from "./socket"
+import log from "loglevel" 
+
 
 
 export type VwapListItem = {
@@ -20,27 +22,15 @@ export const valueFormatter = (value : number | null) => {
 
 
 const useVwapList = () => {
-    
-    const REQUEST_INTERVAL = 1000;
-    const url = "http://localhost:5335/top-five";
+    log.setLevel("WARN")
+
     const [vwapList, setVwapList] = useState<VwapListItem[]>([]);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
-    const getTopFive = async() => {
-        try {
-            const topFiveRequest = await sendRequest<VwapRequestItem[]>(url);
-            processTopFiveResponse(topFiveRequest);
-        } catch(error) {
-            if(error instanceof Error) {
-                throw new Error(error.message);
-            }
-        }
-    }
-
 
     const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) => {
-        if(topFiveResponse.length > 0) setLastUpdated(dayjs(topFiveResponse[0].last_updated).format('hh:mm:ss A'));
         let updatedTopFive : VwapListItem[] = [];
+        log.debug("Parsing VwapListItems")
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
                 vwap : parseInt(requestItem.vwap.toFixed(2)),
@@ -49,15 +39,26 @@ const useVwapList = () => {
             updatedTopFive.push(listItem);
         }
         setVwapList(updatedTopFive);
+        log.debug("Updated current top five list")
     }
 
+   
     useEffect(() => {
-        getTopFive();
-        const interval = setInterval(() => {
-            getTopFive();
-        }, REQUEST_INTERVAL);
-        return () => clearInterval(interval);
-    },[]);
+        log.info("Connecting to websocket")
+   
+        socket.on("connect", () => {
+            log.info("Websocket connection established")
+        })
+
+        socket.on("message", (data : {data : VwapRequestItem[]}) => {
+            log.info("Receiving message from websocket")
+            processTopFiveResponse(data['data'])
+            const now = dayjs()
+            const nowFormatted = now.format("hh:mm:ss A")
+            setLastUpdated(nowFormatted)
+        })
+
+    }, [])
 
 
     return {
