@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import {socket} from "./socket"
+import log from "loglevel" 
+
 
 
 export type VwapListItem = {
@@ -20,16 +22,15 @@ export const valueFormatter = (value : number | null) => {
 
 
 const useVwapList = () => {
-     
-    // @ts-ignore
-    const REQUEST_INTERVAL = 1000;
+    log.setLevel("WARN")
+
     const [vwapList, setVwapList] = useState<VwapListItem[]>([]);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
 
     const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) => {
-        if(topFiveResponse.length > 0) setLastUpdated(dayjs(topFiveResponse[0].last_updated).format('hh:mm:ss A'));
         let updatedTopFive : VwapListItem[] = [];
+        log.debug("Parsing VwapListItems")
         for(const requestItem of topFiveResponse) {
             const listItem : VwapListItem = {
                 vwap : parseInt(requestItem.vwap.toFixed(2)),
@@ -38,16 +39,19 @@ const useVwapList = () => {
             updatedTopFive.push(listItem);
         }
         setVwapList(updatedTopFive);
+        log.debug("Updated current top five list")
     }
 
    
     useEffect(() => {
-        console.log("connecting to server");
+        log.info("Connecting to websocket")
+   
         socket.on("connect", () => {
-            console.log("CONNECTED")
+            log.info("Websocket connection established")
         })
 
         socket.on("message", (data : {data : VwapRequestItem[]}) => {
+            log.info("Receiving message from websocket")
             processTopFiveResponse(data['data'])
             const now = dayjs()
             const nowFormatted = now.format("hh:mm:ss A")
