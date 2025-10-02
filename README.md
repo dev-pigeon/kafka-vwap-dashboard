@@ -9,6 +9,7 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 ## Tech Stack & Requirements &nbsp; 🧰
 
 ### Stack 📚
+
 - Java / JUnit
 - Apache Kafka
 - PostgreSQL
@@ -27,18 +28,23 @@ This project calculates **volume weighted average price (VWAP)** for simluated r
 
 <br>
 
-## Setup & Run &nbsp; 🚀 
+## Setup & Run &nbsp; 🚀
+
 Clone the repository:
+
 ```bash
 git clone https://github.com/dev-pigeon/kafka-vwap-dashboard.git
 ```
+
 Then run:
+
 ```bash
 cd kafka-vwap-dashboard
 chmod +x bin/setup.sh
 ./bin/setup.sh
 docker-compose up --build
 ```
+
 Click [here](http://localhost:80) or open your browser of choice and navigate to http://localhost:80
 
 <br>

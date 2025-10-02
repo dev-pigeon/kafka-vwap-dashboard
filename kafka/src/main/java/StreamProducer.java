@@ -14,7 +14,9 @@ public class StreamProducer {
     private static final Logger log = LoggerFactory.getLogger(StreamProducer.class);
 
     public static void main(String[] args) {
-        streamFile();
+        while (true) {
+            streamFile();
+        }
     }
 
     private static void streamFile() {
