@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { sendRequest } from "./Api";
 import dayjs from "dayjs";
+import {socket} from "./socket"
 
 
 export type VwapListItem = {
@@ -20,22 +20,11 @@ export const valueFormatter = (value : number | null) => {
 
 
 const useVwapList = () => {
-    
+     
+    // @ts-ignore
     const REQUEST_INTERVAL = 1000;
-    const url = "http://localhost:5335/top-five";
     const [vwapList, setVwapList] = useState<VwapListItem[]>([]);
     const [lastUpdated, setLastUpdated] = useState<string | null>(null);
-
-    const getTopFive = async() => {
-        try {
-            const topFiveRequest = await sendRequest<VwapRequestItem[]>(url);
-            processTopFiveResponse(topFiveRequest);
-        } catch(error) {
-            if(error instanceof Error) {
-                throw new Error(error.message);
-            }
-        }
-    }
 
 
     const processTopFiveResponse = (topFiveResponse : VwapRequestItem[]) => {
@@ -51,13 +40,21 @@ const useVwapList = () => {
         setVwapList(updatedTopFive);
     }
 
+   
     useEffect(() => {
-        getTopFive();
-        const interval = setInterval(() => {
-            getTopFive();
-        }, REQUEST_INTERVAL);
-        return () => clearInterval(interval);
-    },[]);
+        console.log("connecting to server");
+        socket.on("connect", () => {
+            console.log("CONNECTED")
+        })
+
+        socket.on("message", (data : {data : VwapRequestItem[]}) => {
+            processTopFiveResponse(data['data'])
+            const now = dayjs()
+            const nowFormatted = now.format("hh:mm:ss A")
+            setLastUpdated(nowFormatted)
+        })
+
+    }, [])
 
 
     return {
