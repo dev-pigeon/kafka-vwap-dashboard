@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5335:5335"
+    env_file:
+      - ./api/.env
     depends_on:
       - db
     networks:

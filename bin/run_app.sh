@@ -9,5 +9,5 @@ else
 fi
 
 # compose up
-docker compose -f docker-compose.client.yml up -d  
-docker compose -f docker-compose.server.yml up -d 
+docker compose -f docker-compose.client.yml up -d --build --force-recreate 
+docker compose -f docker-compose.server.yml up -d --build --force-recreate 

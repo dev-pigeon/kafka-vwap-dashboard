@@ -1,14 +1,17 @@
-from flask import Flask, jsonify, request  # type: ignore
-from flask_socketio import SocketIO, send, emit, join_room, leave_room  # type: ignore
+from flask import Flask, jsonify  # type: ignore
+from flask_socketio import SocketIO  # type: ignore
 from db import get_connection
 from flask_cors import CORS  # type: ignore
 import logging
+import os
+from dotenv import load_dotenv  # type: ignore
 
 
+load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 socketio = SocketIO(
-    app, cors_allowed_origins="*", async_mode="eventlet")
+    app, cors_allowed_origins=os.getenv("API_ALLOWED_ORIGINS"), async_mode="eventlet")  # type:ignore
 CORS(app)
 
 
@@ -60,5 +63,9 @@ def hello_world():
 
 if __name__ == '__main__':
     socketio.start_background_task(emit_top_five)
-    socketio.run(app=app, debug=True, host='0.0.0.0', port=5335,
+    host_url = os.getenv("API_HOST_URL")
+    host_port = os.getenv("API_PORT")
+    host_port = None if host_port is None else int(host_port)
+
+    socketio.run(app=app, debug=True, host=host_url, port=host_port,
                  use_reloader=False)

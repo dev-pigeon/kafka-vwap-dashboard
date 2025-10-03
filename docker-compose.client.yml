@@ -7,6 +7,8 @@ services:
       - "80:80"
     networks:
       - kafka_dashboard
+    env_file:
+      - ./client/kafka-dashboard-client/src/.env
 networks:
   kafka_dashboard:
     external: true

@@ -2,3 +2,4 @@ kafka/data/all_stock_data.csv
 kafka/data/stock_data_cleaned.csv
 target
 api/__pycache__
+.env
