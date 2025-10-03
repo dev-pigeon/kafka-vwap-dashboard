@@ -20,9 +20,9 @@ jobs:
       - name: Build Client Image
         run: |
           echo "Building client image..."
-          docker compose -f docker-compose.client.yml build --pull -progress=plain
+          docker compose -f docker-compose.client.yml build --pull --progress=plain
 
       - name: Build Server Image
         run: |
           echo "Building server image..."
-          docker compose -f docker-compose.server.yml build --pull -progress=plain
+          docker compose -f docker-compose.server.yml build --pull --progress=plain
