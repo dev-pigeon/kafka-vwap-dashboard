@@ -25,17 +25,6 @@ services:
     networks:
       - kafka_dashboard
 
-  client:
-    build:
-      context: ./client/kafka-dashboard-client
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-    networks:
-      - kafka_dashboard
-
   kafka-broker:
     image: bitnami/kafka:3.7
     ports:
@@ -66,5 +55,6 @@ services:
 
 networks:
   kafka_dashboard:
+    external: true
 volumes:
   pgdata:

@@ -1,0 +1,12 @@
+services:
+  client:
+    build:
+      context: ./client/kafka-dashboard-client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - kafka_dashboard
+networks:
+  kafka_dashboard:
+    external: true
