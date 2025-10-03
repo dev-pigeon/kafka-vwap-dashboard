@@ -1,0 +1,28 @@
+name: Build Docker Imags
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-docker-images:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout Repo
+    - uses: actions/checkout@v3
+
+    - name: Set up Docker
+    - uses: docker/setup-buildx-actions@v2
+
+    - name: Build Client Image
+      run: |
+        echo "Building client image..."
+        docker compose -f docker-compose.client.yml build --pull -progress=plain
+
+    - name: Build Server Image
+      run: |
+        echo "Building server image..."
+        docker compose -f docker-compose.server.yml build --pull -progress=plain
