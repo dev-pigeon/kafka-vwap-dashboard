@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./client/kafka-dashboard-client/
+
       - name: Build Client Image
         run: |
           echo "Building client image..."
