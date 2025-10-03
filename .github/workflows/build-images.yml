@@ -17,6 +17,11 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
       - name: Build Client Image
         run: |
           echo "Building client image..."
