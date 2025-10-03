@@ -2,7 +2,6 @@ package Window;
 
 import java.util.Deque;
 import java.util.LinkedList;
-
 import StockRecord.StockRecord;
 
 import org.slf4j.Logger;
@@ -57,17 +56,26 @@ public class Window {
         double recordVolume = record.getVolume();
         runningProductSum -= (record.getClosePrice() * recordVolume);
         runningVolumeSum -= recordVolume;
-        recordDeque.pop();
     }
 
-    protected void checkRecordMembership(long now) {
-        while (!recordDeque.isEmpty()) {
-            StockRecord front = recordDeque.peek();
-            if (!recordIsValid(front.getTimeStamp(), now)) {
-                evictRecord(front);
+    protected void clearExpiredRecords(long now) {
+        final int originalSize = recordDeque.size();
+        Deque<StockRecord> updatedBuffer = new LinkedList<>();
+        StockRecord current = null;
+        while (recordDeque.peek() != null) {
+            current = recordDeque.pop();
+            if (!recordIsValid(current.getTimeStamp(), now)) {
+                evictRecord(current);
             } else {
-                break;
+                updatedBuffer.push(current);
             }
+        }
+        recordDeque = updatedBuffer;
+        final int updatedSize = recordDeque.size();
+        final int evictionCount = Math.abs(updatedSize - originalSize);
+        if (evictionCount > 0) {
+            String info = String.format("Evicted %d records from window %s", evictionCount, current.getTicker());
+            log.info(info);
         }
     }
 
@@ -80,7 +88,7 @@ public class Window {
     }
 
     public Double calculateVWAP() {
-        checkRecordMembership(System.currentTimeMillis());
+        clearExpiredRecords(System.currentTimeMillis());
         if (!(validSums())) {
             return null;
         }
