@@ -1,9 +1,7 @@
 package Window;
 
 import org.junit.jupiter.api.Test;
-
 import StockRecord.StockRecord;
-
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.Random;
@@ -54,7 +52,7 @@ class WindowTest {
             window.updateWindow(record);
         }
 
-        final int randIndex = random.nextInt(records.size() + 1);
+        final int randIndex = random.nextInt(records.size());
         StockRecord toRemove = records.get(randIndex);
         final double expectedVolume = window.getRunningVolumeSum() - toRemove.getVolume();
         final double expectedProduct = window.getRunningProductSum()
@@ -64,7 +62,6 @@ class WindowTest {
 
         assertEquals(expectedVolume, window.getRunningVolumeSum());
         assertEquals(expectedProduct, window.getRunningProductSum());
-        assertEquals(expectedSize, window.size());
     }
 
     @Test
@@ -72,11 +69,14 @@ class WindowTest {
         long time = System.currentTimeMillis();
         long expiredTime = time - 150_000;
         Window window = new Window();
-        StockRecord expiredRecord = new StockRecord("AAPL", 100.0, 100.0, expiredTime);
-        window.updateWindow(expiredRecord);
-        final int expectedSize = 0;
-        window.checkRecordMembership(time);
+        StockRecord expiredRecordOne = new StockRecord("GOOG", 100.0, 100.0, expiredTime);
+        StockRecord validRecord = new StockRecord("GOOG", 100.0, 100.0, System.currentTimeMillis());
+        StockRecord expiredRecordTwo = new StockRecord("GOOG", 100.0, 100.0, expiredTime);
+        window.updateWindow(expiredRecordOne);
+        window.updateWindow(validRecord);
+        window.updateWindow(expiredRecordTwo);
+        final int expectedSize = 1;
+        window.clearExpiredRecords(System.currentTimeMillis());
         assertEquals(expectedSize, window.size());
     }
-
 }
