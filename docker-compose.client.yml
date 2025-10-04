@@ -10,6 +10,7 @@ services:
     env_file:
       - ./client/kafka-dashboard-client/src/.env
     image: jackyoungdev/kafka-dashboard-client:0.1
+    platform: linux/amd64
 networks:
   kafka_dashboard:
     external: true

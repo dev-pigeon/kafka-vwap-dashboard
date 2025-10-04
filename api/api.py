@@ -12,7 +12,6 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 socketio = SocketIO(
     app, cors_allowed_origins=os.getenv("API_ALLOWED_ORIGINS"), async_mode="eventlet")  # type:ignore
-CORS(app)
 
 
 def get_resources():
