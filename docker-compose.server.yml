@@ -51,10 +51,14 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_CREATE_TOPICS: "stock-records:1:1"
       ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_LOG_DIRS: /kafka-logs
+      KAFKA_LOG_RETENTION_MS: 1000
     depends_on:
       - zookeeper
     networks:
       - kafka_dashboard
+    tmpfs:
+      - /kafka-logs
 
   kafka-app:
     build:
