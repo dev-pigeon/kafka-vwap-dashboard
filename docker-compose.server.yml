@@ -41,7 +41,7 @@ services:
       - kafka_dashboard
 
   kafka-broker:
-    image: wurstmeister/zookeeper:latest
+    image: wurstmeister/kafka:latest
     ports:
       - "9092:9092"
     environment:
