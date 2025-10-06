@@ -27,7 +27,6 @@ public class StreamConsumer {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, StockRecordSerde.class);
         props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE_V2); // each stock is processed
-                                                                                             // once
 
         consume(props);
     }
@@ -36,9 +35,9 @@ public class StreamConsumer {
     private static void consume(Properties props) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
         streamsBuilder.addStateStore(Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(STORE_NAME),
+                Stores.inMemoryKeyValueStore(STORE_NAME),
                 Serdes.String(),
-                new WindowSerde()));
+                new WindowSerde()).withLoggingDisabled());
         KStream<String, StockRecord> stream = streamsBuilder.stream("stock-records");
 
         stream.transform(() -> new WindowTransformer(), Named.as("WindowTransformer"), STORE_NAME);
