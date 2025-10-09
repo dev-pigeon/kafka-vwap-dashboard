@@ -71,12 +71,6 @@ public class Window {
             }
         }
         recordDeque = updatedBuffer;
-        final int updatedSize = recordDeque.size();
-        final int evictionCount = Math.abs(updatedSize - originalSize);
-        if (evictionCount > 0) {
-            String info = String.format("Evicted %d records from window %s", evictionCount, current.getTicker());
-            log.info(info);
-        }
     }
 
     private boolean validSums() {
