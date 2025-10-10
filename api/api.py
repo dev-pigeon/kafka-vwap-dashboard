@@ -10,8 +10,11 @@ from dotenv import load_dotenv  # type: ignore
 load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
+allowed_origin = os.getenv('API_ALLOWED_ORIGIN')
 socketio = SocketIO(
-    app, cors_allowed_origins=os.getenv("API_ALLOWED_ORIGINS"), async_mode="eventlet")  # type:ignore
+    app, cors_allowed_origins=allowed_origin, async_mode="eventlet")  # type:ignore
+
+logging.info(f"Accepting connections from {allowed_origin}")
 
 
 def get_resources():
