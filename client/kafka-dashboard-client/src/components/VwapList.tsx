@@ -50,7 +50,7 @@ const VwapList = ({ vwapList }: VwapListProps) => {
           />
         </Box>
       )}{" "}
-      {
+      {vwapList.length == 0 && (
         // else vwap list has not loaded
         <Stack
           sx={{
@@ -69,7 +69,7 @@ const VwapList = ({ vwapList }: VwapListProps) => {
             }}
           />
         </Stack>
-      }
+      )}
     </>
   );
 };
