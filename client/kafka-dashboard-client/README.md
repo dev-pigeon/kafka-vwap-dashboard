@@ -2,7 +2,7 @@
 
 ### Role in the System
 
-This directory contains a React-based frontend. The frontend queries the Flask API every second in order to retrieve and display the most current volume weighted average price (VWAP) calculations.
+This directory contains a React-based frontend. The frontend receives the VWAP scores every second via the Flask-based websocket.
 
 ## Contents
 
