@@ -57,8 +57,10 @@ public class WindowTransformer implements Transformer<String, StockRecord, KeyVa
                 Double vwap = window.calculateVWAP();
                 if (vwap != null && !Double.isNaN(vwap)) {
                     cache.put(entry.key, vwap);
+                } else {
+                    cache.put(entry.key, 0.0);
                 }
-                store.put(entry.key, window); // leave this in
+                store.put(entry.key, window);
             }
         }
         context.commit();
