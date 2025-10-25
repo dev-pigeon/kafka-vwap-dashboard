@@ -1,7 +1,6 @@
 from flask import Flask, jsonify  # type: ignore
 from flask_socketio import SocketIO  # type: ignore
-from db import get_connection
-from flask_cors import CORS  # type: ignore
+from db import db_connection
 import logging
 import os
 from dotenv import load_dotenv  # type: ignore
@@ -17,30 +16,18 @@ socketio = SocketIO(
 logging.info(f"Accepting connections from {allowed_origin}")
 
 
-def get_resources():
-    conn = get_connection()
-    return conn, conn.cursor()
-
-
-def close_resources(conn, cursor):
-    conn.close()
-    cursor.close()
-
-
 def emit_top_five():
     with app.app_context():
-        conn, cursor = get_resources()
-        while True:
-            cursor.execute(
-                "SELECT ticker, vwap, last_updated FROM kafka_dashboard.stock_vwap ORDER BY vwap DESC LIMIT 5;")
-            top_five = cursor.fetchall()
-            data = jsonify({"data": [
-                {"ticker": row[0], "vwap": row[1], "last_updated": row[2]} for row in top_five]})
-            socketio.emit("message", data.get_json())
-            logging.info("Emitted top five stocks")
-            socketio.sleep(1)
-
-    close_resources(conn, cursor)
+        with db_connection() as cursor:
+            while True:
+                cursor.execute(
+                    "SELECT ticker, vwap, last_updated FROM kafka_dashboard.stock_vwap ORDER BY vwap DESC LIMIT 5;")
+                top_five = cursor.fetchall()
+                data = jsonify({"data": [
+                    {"ticker": row[0], "vwap": row[1], "last_updated": row[2]} for row in top_five]})
+                socketio.emit("message", data.get_json())
+                logging.info("Emitted top five stocks")
+                socketio.sleep(1)
 
 
 @socketio.on('connect')
@@ -51,11 +38,10 @@ def handle_join():
 # Legacy function used for debugging
 @app.route("/stocks", methods=['GET'])
 def get_stocks():
-    conn, cursor = get_resources()
-    cursor.execute("SELECT * FROM kafka_dashboard.stock_vwap;")
-    rows = cursor.fetchall()
-    close_resources(conn, cursor)
-    return jsonify([{"ticker": row[0], "vwap": row[1], "last_updated": row[2]} for row in rows])
+    with db_connection() as cursor:
+        cursor.execute("SELECT * FROM kafka_dashboard.stock_vwap;")
+        rows = cursor.fetchall()
+        return jsonify([{"ticker": row[0], "vwap": row[1], "last_updated": row[2]} for row in rows])
 
 
 @app.route("/")
